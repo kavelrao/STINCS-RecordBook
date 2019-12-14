@@ -35,6 +35,6 @@ class Design(models.Model):
         return self.name
 
     @property
-    def filepath(self):
-        path = str(Path().absolute().parent.absolute()) + "/media/" + self.owner.team.name
+    def folderpath(self):
+        path = str(Path().absolute().parent.absolute()) + "/media/" + self.owner.team.name + '/' + self.name
         return path

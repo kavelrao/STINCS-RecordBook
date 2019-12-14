@@ -32,4 +32,6 @@ urlpatterns = [
     path('designs/', home.views.designs, name='designs'),
     path('team/', home.views.team, name='team'),
     path('launches/', home.views.launches, name='launches'),
+    path('log_in/', home.views.log_in, name='log_in'),
+    path('log_out/', home.views.log_out, name='log_out'),
 ]

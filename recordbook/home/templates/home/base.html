@@ -6,12 +6,24 @@
 <body>
   {% block navbar %}
   <div class="navbar">
-    <a href="/">RecordBook</a>
+    {% if user.is_authenticated %}
+      <a href="/homepage/">RecordBook</a>
+    {% else %}
+      <a href="/">RecordBook</a>
+    {% endif %}
     <a href="/dataEntry/">Data Entry</a>
     <a href="/team/">Team</a>
     <a href="/designs/">Designs</a>
     <a href="/launches/">Launches</a>
+    {% if user.is_authenticated %}
+      <a href="/log_out/">Log out</a>
+    {% else %}
+      <a href="/log_in/">Log in</a>
+      <a href="/register/">Register</a>
+    {% endif %}
   </div>
   {% endblock navbar %}
 </body>
+{% block content %}
+{% endblock content %}
 </html>
