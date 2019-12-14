@@ -28,4 +28,8 @@ urlpatterns = [
     path('home/', include('home.urls')),
     path('admin/', admin.site.urls),
     path('', home.views.index, name='index'),
+    path('dataEntry/', home.views.dataEntry, name='dataEntry'),
+    path('designs/', home.views.designs, name='designs'),
+    path('team/', home.views.team, name='team'),
+    path('launches/', home.views.launches, name='launches'),
 ]
