@@ -29,6 +29,10 @@ ALLOWED_HOSTS = []
 
 DEFAULT_FROM_EMAIL = 'rao.kavel@gmail.com'
 
+LOGIN_URL = '/log_in'
+
+LOGIN_REDIRECT_URL = '/homepage'
+
 
 # Application definition
 

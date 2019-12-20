@@ -1,0 +1,16 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+
+{% if success %}
+  <p>Your join code is {{ join_code }}</p>
+
+{% else %}
+  <form action="{% url 'create_team' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type=submit></input>
+  </form>
+{% endif %}
+
+{% endblock content %}

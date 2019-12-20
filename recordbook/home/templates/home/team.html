@@ -1,4 +1,29 @@
 {% extends "home/base.html" %}
 
 {% block content %}
+<div>
+  <h1>{{ team.name }}</h1>
+  <p>Join code: {{ team.join_code }}</p>
+  <h2>Captain:</h2>
+  <p>{{ captain.user.first_name }} {{ captain.user.last_name }}</p>
+
+  <h2>Members:</h2>
+  <ul>
+  {% for account in team.accounts.all %}
+    <li>{{ account.user.first_name }} {{ account.user.last_name }}</li>
+  {% endfor %}
+  </ul>
+
+  <h2>Designs:</h2>
+  {% if designs|length > 0 %}
+    <ul>
+    {% for design in designs %}
+      <li>{{ design.name }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No designs so far</p>
+  {% endif %}
+
+</div>
 {% endblock content %}

@@ -9,10 +9,10 @@ class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_captain = models.BooleanField(default=False)
 
-    team = models.OneToOneField(
+    team = models.ForeignKey(
         'Team',
         on_delete=models.CASCADE,
-        related_name='team',
+        related_name='accounts',
     )
 
     def __str__(self):
@@ -20,6 +20,7 @@ class Account(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=50)
+    join_code = models.CharField(max_length=8)
 
     def __str__(self):
         return self.name
@@ -29,6 +30,7 @@ class Design(models.Model):
     owner = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
+        related_name='designs',
     )
 
     def __str__(self):
