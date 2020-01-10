@@ -1,4 +1,4 @@
-from .forms import CreateTeamForm, JoinTeamForm
+from .forms import CreateTeamForm, JoinTeamForm, DesignForm
 from .models import User, Account, Team, Design
 
 from django.shortcuts import render, redirect
@@ -95,8 +95,9 @@ def join_team(request):
         return render(request, 'home/join_team.html', context)
 
     else:
-        form = JoinTeamForm()
-        context = {'form': form}
+        form = DesignForm()
+        context = set_context(request)
+        context['form'] = form
         return render(request, 'home/join_team.html', context)
 
 @login_required
@@ -106,28 +107,40 @@ def homepage(request):
 
 @login_required
 def designs(request):
-    context = {}
+    context = set_context(request)
     return render(request, 'home/designs.html', context)
 
 @login_required
-def team(request):
-    user = request.user
-    account = user.account
-    team = account.team
-    captain = team.accounts.get(is_captain=True)
-    designs = []
-    for account in team.accounts.all():
-        for design in account.designs.all():
-            designs.append(design)
+def new_design(request):
+    if request.method == "POST":
+        form = DesignForm(request.POST)
+        if form.is_valid():
+            # Get attributes from the form
+            name = form.cleaned_data['name']
+            motor_diameter = form.cleaned_data['motor_diameter']
+            fin_description = form.cleaned_data['fin_description']
+            length = form.cleaned_data['length']
+            diameter = form.cleaned_data['diameter']
+            # Create a new design and add attributes
+            design = Design(name=name, motor_diameter=motor_diameter,
+                fin_description=fin_description, length=length, diameter=diameter)
+            design.owner = request.user.account
+            design.save()
 
-    context = {
-    'request': request,
-    'user': user,
-    'team': team,
-    'account': account,
-    'captain': captain,
-    'designs': designs
-    }
+            # Redirect to designs
+            return redirect('designs')
+        # If form is invalid
+        context = {'form': form}
+        return render(request, 'home/new_design.html', context)
+
+    else:
+        form = DesignForm()
+        context = {'form': form}
+        return render(request, 'home/new_design.html', context)
+
+@login_required
+def team(request):
+    context = set_context(request)
     return render(request, 'home/team.html', context)
 
 @login_required
@@ -153,3 +166,22 @@ def generate_join_code():
         return join_code
     else:
         return generate_join_code()
+
+def set_context(request):
+    user = request.user
+    account = user.account
+    team = account.team
+    captain = team.accounts.get(is_captain=True)
+    designs = []
+    for account in team.accounts.all():
+        for design in account.designs.all():
+            designs.append(design)
+    context = {
+    'request': request,
+    'user': user,
+    'team': team,
+    'account': account,
+    'captain': captain,
+    'designs': designs
+    }
+    return context

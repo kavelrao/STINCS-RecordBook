@@ -1,4 +1,21 @@
 {% extends "home/base.html" %}
 
 {% block content %}
+<h1>Designs</h1>
+<a href="/new_design/">Add a design</a>
+{% if designs|length > 0 %}
+  <ul>
+  {% for design in designs %}
+    <li>{{ design.name }}</li>
+    <div class="tab">
+      <p>Owner: {{ design.owner }}</p>
+      <p>Diameter: {{ design.diameter }}mm</p>
+      <p>Motor diameter: {{ design.motor_diameter }}mm</p>
+      <p>Length: {{ design.length }}mm</p>
+    </div>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>No designs so far</p>
+{% endif %}
 {% endblock content %}

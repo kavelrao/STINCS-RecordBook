@@ -60,6 +60,15 @@ class JoinTeamForm(forms.Form):
                 break
         return username
 
+class DesignForm(forms.Form):
+    name = forms.CharField(max_length=256)
+    motor_diameter = forms.IntegerField() # millimeters
+    fin_description = forms.CharField(max_length=500)
+    length = forms.DecimalField()  # millimeters
+    diameter = forms.DecimalField()  # millimeters
+
+
+# Not used
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=256)
     password = forms.CharField(max_length=256, widget=forms.PasswordInput)

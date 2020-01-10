@@ -1,0 +1,9 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+<form action="{% url 'new_design' %}" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type=submit></input>
+</form>
+{% endblock content %}

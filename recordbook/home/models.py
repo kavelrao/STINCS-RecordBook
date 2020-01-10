@@ -27,6 +27,10 @@ class Team(models.Model):
 
 class Design(models.Model):
     name = models.CharField(max_length=50)
+    motor_diameter = models.IntegerField()  # millimeters
+    fin_description = models.CharField(max_length=500)
+    length = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
+    diameter = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
     owner = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
