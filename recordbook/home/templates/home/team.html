@@ -3,9 +3,9 @@
 {% block content %}
 <div>
   <h1>{{ team.name }}</h1>
-  <p>Join code: {{ team.join_code }}</p>
+  <p class="info">Join code: {{ team.join_code }}</p>
   <h2>Captain:</h2>
-  <p>{{ captain.user.first_name }} {{ captain.user.last_name }}</p>
+  <p class="info">{{ captain.user.first_name }} {{ captain.user.last_name }}</p>
 
   <h2>Members:</h2>
   <ul>
