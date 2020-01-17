@@ -1,4 +1,4 @@
-from .forms import CreateTeamForm, JoinTeamForm, DesignForm
+from .forms import CreateTeamForm, JoinTeamForm, DesignForm, LaunchEntryForm, FlightEntryForm
 from .models import User, Account, Team, Design
 
 from django.shortcuts import render, redirect
@@ -147,6 +147,48 @@ def team(request):
 def dataEntry(request):
     context = {}
     return render(request, 'home/dataEntry.html', context)
+
+@login_required
+def new_launch(request):
+    if request.method == "POST":
+        form = LaunchEntryForm(request.POST, request.user)
+        if form.is_valid():
+            # Get attributes from the form
+
+            # Create a new launch and add attributes
+
+
+            # Redirect to designs
+            return redirect('dataEntry')
+        # If form is invalid
+        context = {'form': form}
+        return render(request, 'home/new_launch.html', context)
+
+    else:
+        form = LaunchEntryForm()
+        context = {'form': form}
+        return render(request, 'home/new_launch.html', context)
+
+@login_required
+def log_flight(request):
+    if request.method == "POST":
+        form = FlightEntryForm(request.POST, request.user)
+        if form.is_valid():
+            # Get attributes from the form
+
+            # Create a new launch and add attributes
+
+
+            # Redirect to designs
+            return redirect('dataEntry/date')  # TODO make this url a thing
+        # If form is invalid
+        context = {'form': form}
+        return render(request, 'home/log_flight.html', context)
+
+    else:
+        form = FlightEntryForm()
+        context = {'form': form}
+        return render(request, 'home/log_flight.html', context)
 
 @login_required
 def launches(request):

@@ -68,6 +68,72 @@ class DesignForm(forms.Form):
     diameter = forms.DecimalField()  # millimeters
 
 
+class LaunchEntryForm(forms.Form): #TODO implement in views and html
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(FlightEntryForm, self).__init__(*args, **kwargs)
+        members = user.team.members.all()
+        for i in range(len(members) + 1):
+            field_name = 'member_%s' % (i,)
+            self.fields[field_name] = forms.BooleanField(required=False)
+
+    def get_member_fields(self):
+        for field_name in self.fields:
+            if field_name.startswith('members_'):
+                yield self[field_name]
+
+    launch_date = forms.DateField()
+    notes = forms.CharField(max_length=1000)
+
+
+class FlightEntryForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(FlightEntryForm, self).__init__(*args, **kwargs)
+
+    launch = forms.ChoiceField(choices=listLaunches(user))
+    goal = forms.CharField(max_length=500)
+
+    # weather
+    temperature = forms.IntegerField()  # Fahrenheit
+    wind_speed = forms.IntegerField()  # mph
+    weather_notes = forms.CharField(max_length=500)
+
+    # descriptions
+    payload_description = forms.CharField(max_length=20)
+    booster_description = forms.CharField(max_length=20)
+    motor_description = forms.CharField(max_length=20)
+    motor_delay = forms.IntegerField()  # seconds
+    parachute_size = forms.IntegerField()  # inches
+    parachute_description = forms.CharField(max_length=20, required=False)
+
+    cg_separation_from_cp = forms.DecimalField()  # inches
+
+    # masses in grams
+    egg_mass = forms.DecimalField()
+    wadding_mass = forms.DecimalField()
+    ballast_mass = forms.DecimalField()
+    motor_mass = forms.DecimalField()
+    total_mass = forms.DecimalField()
+
+    # results
+    altitude = forms.IntegerField()  # feet
+    time = forms.DecimalField()  # seconds
+
+    # reflection
+    modifications_made = forms.CharField(max_length=256)
+    damages = forms.CharField(max_length=256)
+    flight_characteristics = forms.CharField(max_length=500)
+    considerations_for_next_flight = forms.CharField(max_length=256)
+
+
+def listLaunches(user):
+    launches = []
+    for launch_date in user.team.launches.all():
+        launches.append(launch_date)
+    return launches
+
+
 # Not used
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=256)

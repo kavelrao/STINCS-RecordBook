@@ -31,6 +31,7 @@ class Design(models.Model):
     fin_description = models.CharField(max_length=500)
     length = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
     diameter = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
+    openrocket_file = models.FileField(upload_to=self.folderpath())
     owner = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
@@ -40,7 +41,51 @@ class Design(models.Model):
     def __str__(self):
         return self.name
 
-    @property
     def folderpath(self):
         path = str(Path().absolute().parent.absolute()) + "/media/" + self.owner.team.name + '/' + self.name
         return path
+
+class Launch(models.Model):
+    launch_date = models.DateField()
+    notes = models.CharField(max_length=1000)
+    attendance = models.CharField(max_length=500)
+
+class Flight(models.Model):
+    launch = models.ForeignKey(
+        Launch,
+        on_delete=models.CASCADE,
+        related_name='flights',
+    )
+    goal = models.CharField(max_length=500)
+
+    # weather
+    temperature = models.IntegerField()  # Fahrenheit
+    wind_speed = models.IntegerField()  # mph
+    weather_notes = models.CharField(max_length=500)
+
+    # descriptions
+    payload_description = models.CharField(max_length=20)
+    booster_description = models.CharField(max_length=20)
+    motor_description = models.CharField(max_length=20)
+    motor_delay = models.IntegerField()  # seconds
+    parachute_size = models.IntegerField()  # inches
+    parachute_description = models.CharField(max_length=20)
+
+    cg_separation_from_cp = models.DecimalField()  # inches
+
+    # masses in grams
+    egg_mass = models.DecimalField()
+    wadding_mass = models.DecimalField()
+    ballast_mass = models.DecimalField()
+    motor_mass = models.DecimalField()
+    total_mass = models.DecimalField()
+
+    # results
+    altitude = models.IntegerField()  # feet
+    time = models.DecimalField()  # seconds
+
+    # reflection
+    modifications_made = models.CharField(max_length=256)
+    damages = models.CharField(max_length=256)
+    flight_characteristics = models.CharField(max_length=500)
+    considerations_for_next_flight = models.CharField(max_length=256)
