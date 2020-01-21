@@ -31,7 +31,6 @@ class Design(models.Model):
     fin_description = models.CharField(max_length=500)
     length = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
     diameter = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
-    openrocket_file = models.FileField(upload_to=self.folderpath())
     owner = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
@@ -41,6 +40,7 @@ class Design(models.Model):
     def __str__(self):
         return self.name
 
+    @property
     def folderpath(self):
         path = str(Path().absolute().parent.absolute()) + "/media/" + self.owner.team.name + '/' + self.name
         return path
@@ -71,18 +71,18 @@ class Flight(models.Model):
     parachute_size = models.IntegerField()  # inches
     parachute_description = models.CharField(max_length=20)
 
-    cg_separation_from_cp = models.DecimalField()  # inches
+    cg_separation_from_cp = models.DecimalField(decimal_places=2, max_digits=6)  # inches
 
     # masses in grams
-    egg_mass = models.DecimalField()
-    wadding_mass = models.DecimalField()
-    ballast_mass = models.DecimalField()
-    motor_mass = models.DecimalField()
-    total_mass = models.DecimalField()
+    egg_mass = models.DecimalField(decimal_places=2, max_digits=6)
+    wadding_mass = models.DecimalField(decimal_places=2, max_digits=6)
+    ballast_mass = models.DecimalField(decimal_places=2, max_digits=6)
+    motor_mass = models.DecimalField(decimal_places=2, max_digits=6)
+    total_mass = models.DecimalField(decimal_places=2, max_digits=6)
 
     # results
     altitude = models.IntegerField()  # feet
-    time = models.DecimalField()  # seconds
+    time = models.DecimalField(decimal_places=2, max_digits=4)  # seconds
 
     # reflection
     modifications_made = models.CharField(max_length=256)

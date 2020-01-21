@@ -1,5 +1,5 @@
 from .forms import CreateTeamForm, JoinTeamForm, DesignForm, LaunchEntryForm, FlightEntryForm
-from .models import User, Account, Team, Design
+from .models import User, Account, Team, Design, Flight, Launch
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -149,14 +149,22 @@ def dataEntry(request):
     return render(request, 'home/dataEntry.html', context)
 
 @login_required
-def new_launch(request):
+def new_launch(request): # TODO finish this
     if request.method == "POST":
         form = LaunchEntryForm(request.POST, request.user)
         if form.is_valid():
             # Get attributes from the form
+            present_members = '#'
+            for field in form.get_member_fields():
+                username = field[8:]
+                if form.cleaned_data['members_' + username]:
+                    present_members = present_members + username + '#'
+            launch_date = form.cleaned_data['launch_date']
+            notes = form.cleaned_data['notes']
 
             # Create a new launch and add attributes
-
+            launch = Launch(attendance=present_members, launch_date=launch_date, notes=notes)
+            launch.save()
 
             # Redirect to designs
             return redirect('dataEntry')
@@ -170,17 +178,18 @@ def new_launch(request):
         return render(request, 'home/new_launch.html', context)
 
 @login_required
-def log_flight(request):
+def log_flight(request): # TODO finish
     if request.method == "POST":
         form = FlightEntryForm(request.POST, request.user)
         if form.is_valid():
             # Get attributes from the form
 
-            # Create a new launch and add attributes
 
+            # Create a new Flight and add attributes
+            flight = Flight()
 
             # Redirect to designs
-            return redirect('dataEntry/date')  # TODO make this url a thing
+            return redirect('launches/date')  # TODO make this url a thing
         # If form is invalid
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)

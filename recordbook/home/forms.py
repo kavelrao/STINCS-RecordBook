@@ -4,6 +4,12 @@ from django import forms
 from django.contrib.auth.hashers import check_password
 
 
+def listLaunches(user):
+    launches = []
+    for launch_date in user.team.launches.all():
+        launches.append(launch_date)
+    return launches
+
 class CreateTeamForm(forms.Form):
     team_name = forms.CharField(max_length=50)
     captain_first_name = forms.CharField(max_length=256)
@@ -71,11 +77,12 @@ class DesignForm(forms.Form):
 class LaunchEntryForm(forms.Form): #TODO implement in views and html
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
-        super(FlightEntryForm, self).__init__(*args, **kwargs)
-        members = user.team.members.all()
+        super(LaunchEntryForm, self).__init__(*args, **kwargs)
+        members = self.user.team.members.all()
         for i in range(len(members) + 1):
-            field_name = 'member_%s' % (i,)
-            self.fields[field_name] = forms.BooleanField(required=False)
+            field_name = 'member_%s' % (members[i].user.username,)
+            field_label = "Did " + members[i].name + " attend?"
+            self.fields[field_name] = forms.BooleanField(required=False, label=field_label)
 
     def get_member_fields(self):
         for field_name in self.fields:
@@ -90,8 +97,8 @@ class FlightEntryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(FlightEntryForm, self).__init__(*args, **kwargs)
+        self.fields['launch'] = forms.ChoiceField(choices=listLaunches(self.user))
 
-    launch = forms.ChoiceField(choices=listLaunches(user))
     goal = forms.CharField(max_length=500)
 
     # weather
@@ -126,12 +133,6 @@ class FlightEntryForm(forms.Form):
     flight_characteristics = forms.CharField(max_length=500)
     considerations_for_next_flight = forms.CharField(max_length=256)
 
-
-def listLaunches(user):
-    launches = []
-    for launch_date in user.team.launches.all():
-        launches.append(launch_date)
-    return launches
 
 
 # Not used
