@@ -1,4 +1,8 @@
 {% extends "home/base.html" %}
 
 {% block content %}
+    <div>
+        <p><a href="{% url 'new_launch' %}">Create a new launch date</a></p>
+        <p><a href="{% url 'log_flight' %}">Log a flight</a></p>
+    </div>
 {% endblock content %}

@@ -74,19 +74,28 @@ class DesignForm(forms.Form):
     diameter = forms.DecimalField()  # millimeters
 
 
-class LaunchEntryForm(forms.Form): #TODO implement in views and html
+class LaunchEntryForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
+        print(kwargs)
+        user = kwargs.pop('user', None)
         super(LaunchEntryForm, self).__init__(*args, **kwargs)
-        members = self.user.team.members.all()
-        for i in range(len(members) + 1):
+        self.user = user
+        members = self.user.account.team.accounts.all()
+        for i in range(len(members)):
             field_name = 'member_%s' % (members[i].user.username,)
-            field_label = "Did " + members[i].name + " attend?"
+            field_label = "Did " + members[i].user.first_name + " attend?"
             self.fields[field_name] = forms.BooleanField(required=False, label=field_label)
 
+    @property
     def get_member_fields(self):
         for field_name in self.fields:
             if field_name.startswith('members_'):
+                yield self[field_name]
+
+    @property
+    def get_non_member_fields(self):
+        for field_name in self.fields:
+            if not field_name.startswith('members_'):
                 yield self[field_name]
 
     launch_date = forms.DateField()
@@ -132,6 +141,7 @@ class FlightEntryForm(forms.Form):
     damages = forms.CharField(max_length=256)
     flight_characteristics = forms.CharField(max_length=500)
     considerations_for_next_flight = forms.CharField(max_length=256)
+    log_another_flight = forms.BooleanField(required=False, label='Would you like to log another flight?')
 
 
 

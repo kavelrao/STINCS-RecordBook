@@ -48,7 +48,10 @@ class Design(models.Model):
 class Launch(models.Model):
     launch_date = models.DateField()
     notes = models.CharField(max_length=1000)
-    attendance = models.CharField(max_length=500)
+    members_attending = models.ManyToManyField(
+        Account,
+        related_name='launches_attended',
+    )
 
 class Flight(models.Model):
     launch = models.ForeignKey(

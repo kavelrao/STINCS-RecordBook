@@ -81,6 +81,7 @@ def join_team(request):
             user.first_name = first_name
             user.last_name = last_name
             user.save()
+            print(user)
             # Find the Team associated with the join code
             team = Team.objects.get(join_code=join_code)
             # Create a new account associated with the user
@@ -95,8 +96,8 @@ def join_team(request):
         return render(request, 'home/join_team.html', context)
 
     else:
-        form = DesignForm()
-        context = set_context(request)
+        form = JoinTeamForm()
+        context = {'form': form}
         context['form'] = form
         return render(request, 'home/join_team.html', context)
 
@@ -151,20 +152,22 @@ def dataEntry(request):
 @login_required
 def new_launch(request): # TODO finish this
     if request.method == "POST":
-        form = LaunchEntryForm(request.POST, request.user)
+        form = LaunchEntryForm(request.POST, user=request.user)
         if form.is_valid():
             # Get attributes from the form
-            present_members = '#'
-            for field in form.get_member_fields():
-                username = field[8:]
-                if form.cleaned_data['members_' + username]:
-                    present_members = present_members + username + '#'
             launch_date = form.cleaned_data['launch_date']
             notes = form.cleaned_data['notes']
 
             # Create a new launch and add attributes
-            launch = Launch(attendance=present_members, launch_date=launch_date, notes=notes)
+            launch = Launch(launch_date=launch_date, notes=notes)
             launch.save()
+
+            # Add members to attendance
+            for field_name in form.get_member_fields:  # TODO this still doesn't work
+                if form.cleaned_data[field_name]:
+                    username = field_name[7:]
+                    member_account = Account.objects.get(user__username=username)
+                    launch.members_attending.add(member_account)
 
             # Redirect to designs
             return redirect('dataEntry')
@@ -173,7 +176,7 @@ def new_launch(request): # TODO finish this
         return render(request, 'home/new_launch.html', context)
 
     else:
-        form = LaunchEntryForm()
+        form = LaunchEntryForm(user=request.user)
         context = {'form': form}
         return render(request, 'home/new_launch.html', context)
 
@@ -188,14 +191,18 @@ def log_flight(request): # TODO finish
             # Create a new Flight and add attributes
             flight = Flight()
 
-            # Redirect to designs
+            # If they would like to log another flight, redirect to same page
+            if form.cleaned_data['log_another_flight']:
+                return redirect('log_flight')
+
+            # Redirect to launch page otherwise
             return redirect('launches/date')  # TODO make this url a thing
         # If form is invalid
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)
 
     else:
-        form = FlightEntryForm()
+        form = FlightEntryForm(user=request.user)
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)
 
