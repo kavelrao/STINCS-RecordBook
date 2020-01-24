@@ -3,13 +3,6 @@ from .models import User, Team
 from django import forms
 from django.contrib.auth.hashers import check_password
 
-
-def listLaunches(user):
-    launches = []
-    for launch_date in user.team.launches.all():
-        launches.append(launch_date)
-    return launches
-
 class CreateTeamForm(forms.Form):
     team_name = forms.CharField(max_length=50)
     captain_first_name = forms.CharField(max_length=256)
@@ -76,7 +69,6 @@ class DesignForm(forms.Form):
 
 class LaunchEntryForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        print(kwargs)
         user = kwargs.pop('user', None)
         super(LaunchEntryForm, self).__init__(*args, **kwargs)
         self.user = user
@@ -86,21 +78,30 @@ class LaunchEntryForm(forms.Form):
             field_label = "Did " + members[i].user.first_name + " attend?"
             self.fields[field_name] = forms.BooleanField(required=False, label=field_label)
 
-    @property
     def get_member_fields(self):
-        for field_name in self.fields:
-            if field_name.startswith('members_'):
-                yield self[field_name]
+        fields = []
+        for field in self.fields:
+            if field.startswith('member_'):
+                fields.append(field)
+        return fields
 
-    @property
     def get_non_member_fields(self):
-        for field_name in self.fields:
-            if not field_name.startswith('members_'):
-                yield self[field_name]
+        fields = []
+        for field in self.fields:
+            if not field.startswith('member_'):
+                fields.append(field)
+        return fields
 
     launch_date = forms.DateField()
     notes = forms.CharField(max_length=1000)
 
+
+# Helper function for FlightEntryForm
+def listLaunches(user):#TODO add launches attribute to team
+    launches = []
+    for launch_date in user.account.team.launches.all():
+        launches.append(launch_date)
+    return launches
 
 class FlightEntryForm(forms.Form):
     def __init__(self, *args, **kwargs):

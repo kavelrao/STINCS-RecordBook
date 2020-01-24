@@ -163,21 +163,21 @@ def new_launch(request): # TODO finish this
             launch.save()
 
             # Add members to attendance
-            for field_name in form.get_member_fields:  # TODO this still doesn't work
-                if form.cleaned_data[field_name]:
-                    username = field_name[7:]
+            for field in form.get_member_fields():
+                if form.cleaned_data[field]:
+                    username = field[7:]
                     member_account = Account.objects.get(user__username=username)
                     launch.members_attending.add(member_account)
 
             # Redirect to designs
             return redirect('dataEntry')
         # If form is invalid
-        context = {'form': form}
+        context = {'form': form, 'member_fields': form.get_member_fields(), 'non_member_fields': form.get_non_member_fields()}
         return render(request, 'home/new_launch.html', context)
 
     else:
         form = LaunchEntryForm(user=request.user)
-        context = {'form': form}
+        context = {'form': form, 'member_fields': form.get_member_fields(), 'non_member_fields': form.get_non_member_fields()}
         return render(request, 'home/new_launch.html', context)
 
 @login_required
