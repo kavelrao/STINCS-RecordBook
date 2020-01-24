@@ -8,3 +8,28 @@ body {
 .info {
     margin-left: 20px;
 }
+.navbar {
+    overflow: hidden;
+    background-color: #333333;
+    border: none;
+}
+
+.navbar a {
+    color: #09b0fd;
+    float: left;
+    padding: 14px 14px;
+    font-size: 1.3em;
+    display: block;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: white;
+}
+
+.log_in-form {
+    margin: auto;
+    width: 20%;
+    border: 3px solid #09b0fd;
+    padding: 20px;
+}
