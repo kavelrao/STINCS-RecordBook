@@ -149,6 +149,18 @@ def dataEntry(request):
     context = {}
     return render(request, 'home/dataEntry.html', context)
 
+# Helper functions for new_launch to convert field names into Field objects
+def generate_member_fields(form):
+    list = []
+    for field in form.get_member_fields():
+        list.append(form[field])
+    return list
+def generate_non_member_fields(form):
+    list = []
+    for field in form.get_non_member_fields():
+        list.append(form[field])
+    return list
+
 @login_required
 def new_launch(request): # TODO finish this
     if request.method == "POST":
@@ -172,42 +184,79 @@ def new_launch(request): # TODO finish this
             # Redirect to designs
             return redirect('dataEntry')
         # If form is invalid
-        context = {'form': form, 'member_fields': form.get_member_fields(), 'non_member_fields': form.get_non_member_fields()}
+        context = {'form': form, 'member_fields': generate_member_fields(form), 'non_member_fields': generate_non_member_fields(form)}
         return render(request, 'home/new_launch.html', context)
 
     else:
         form = LaunchEntryForm(user=request.user)
-        context = {'form': form, 'member_fields': form.get_member_fields(), 'non_member_fields': form.get_non_member_fields()}
+
+        context = {'form': form, 'member_fields': generate_member_fields(form), 'non_member_fields': generate_non_member_fields(form)}
         return render(request, 'home/new_launch.html', context)
 
 @login_required
 def log_flight(request): # TODO finish
     if request.method == "POST":
-        form = FlightEntryForm(request.POST, request.user)
+        form = FlightEntryForm(request.POST, user=request.user)
         if form.is_valid():
             # Get attributes from the form
-
+            launch = Launch.objects.get(launch_date=form.cleaned_data['launch'])
+            goal = form.cleaned_data['goal']
+            temperature = form.cleaned_data['temperature']
+            wind_speed = form.cleaned_data['wind_speed']
+            weather_notes = form.cleaned_data['weather_notes']
+            payload_description = form.cleaned_data['payload_description']
+            booster_description = form.cleaned_data['booster_description']
+            motor_name = form.cleaned_data['motor_name']
+            motor_delay = form.cleaned_data['motor_delay']
+            parachute_size = form.cleaned_data['parachute_size']
+            parachute_description = form.cleaned_data['parachute_description']
+            cg = form.cleaned_data['cg_separation_from_cp']
+            egg_mass = form.cleaned_data['egg_mass']
+            wadding_mass = form.cleaned_data['wadding_mass']
+            ballast_mass = form.cleaned_data['ballast_mass']
+            motor_mass = form.cleaned_data['motor_mass']
+            total_mass = form.cleaned_data['total_mass']
+            altitude = form.cleaned_data['altitude']
+            time = form.cleaned_data['time']
+            mods = form.cleaned_data['modifications_made']
+            damages = form.cleaned_data['damages']
+            flight_characteristics = form.cleaned_data['flight_characteristics']
+            considerations_for_next_flight = form.cleaned_data['considerations_for_next_flight']
 
             # Create a new Flight and add attributes
-            flight = Flight()
+            flight = Flight(
+                launch=launch, goal=goal, temperature=temperature, wind_speed=wind_speed,
+                weather_notes=weather_notes, payload_description=payload_description,
+                booster_description=booster_description, motor_name=motor_name,
+                motor_delay=motor_delay, parachute_size=parachute_size,
+                parachute_description=parachute_description, cg_separation_from_cp=cg,
+                egg_mass=egg_mass, wadding_mass=wadding_mass, ballast_mass=ballast_mass,
+                motor_mass=motor_mass, total_mass=total_mass, altitude=altitude,
+                time=time, modifications_made=mods, damages=damages,
+                flight_characteristics=flight_characteristics,
+                considerations_for_next_flight=considerations_for_next_flight)
+            flight.save()
 
             # If they would like to log another flight, redirect to same page
             if form.cleaned_data['log_another_flight']:
                 return redirect('log_flight')
 
             # Redirect to launch page otherwise
-            return redirect('launches/date')  # TODO make this url a thing
+            date = form.cleaned_data['launch']
+            return redirect('/launches/' + date)  # TODO make this url a thing
+
         # If form is invalid
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)
 
     else:
         form = FlightEntryForm(user=request.user)
+        form.order_fields(['launch'])
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)
 
 @login_required
-def launches(request):
+def launches(request, date):
     context = {}
     return render(request, 'home/launches.html', context)
 

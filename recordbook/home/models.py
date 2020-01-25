@@ -25,6 +25,15 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def launches(self):
+        launches = []
+        for member in self.accounts.all():
+            for each_launch in member.launches_attended.all():
+                if each_launch not in launches:
+                    launches.append(each_launch)
+        return launches
+
 class Design(models.Model):
     name = models.CharField(max_length=50)
     motor_diameter = models.IntegerField()  # millimeters
@@ -69,12 +78,12 @@ class Flight(models.Model):
     # descriptions
     payload_description = models.CharField(max_length=20)
     booster_description = models.CharField(max_length=20)
-    motor_description = models.CharField(max_length=20)
+    motor_name = models.CharField(max_length=20)
     motor_delay = models.IntegerField()  # seconds
     parachute_size = models.IntegerField()  # inches
     parachute_description = models.CharField(max_length=20)
 
-    cg_separation_from_cp = models.DecimalField(decimal_places=2, max_digits=6)  # inches
+    cg_separation_from_cp = models.DecimalField(decimal_places=2, max_digits=6)  # mm
 
     # masses in grams
     egg_mass = models.DecimalField(decimal_places=2, max_digits=6)

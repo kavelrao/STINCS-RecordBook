@@ -1,6 +1,7 @@
 {% extends "home/base.html" %}
 
 {% block content %}
+<div>
 <form action="{% url 'new_launch' %}" method="POST">
   {% csrf_token %}
 
@@ -12,17 +13,14 @@
   {% endfor %}
 
   {% for field in non_member_fields %}
-      <p>
-      {{ field.label_tag }} {{ field }}
-      </p>
+      <p>{{ field.label_tag }} {{ field }}</p>
   {% endfor %}
 
   {% for field in member_fields %}
-      <p>
-      {{ field.label_tag }} {{ field }}
-      </p>
+      <p>{{ field.label_tag }} {{ field }}</p>
   {% endfor %}
 
   <input type=submit></input>
 </form>
+</div>
 {% endblock content %}

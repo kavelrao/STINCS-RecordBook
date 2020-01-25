@@ -1,0 +1,9 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+<form action="{% url 'log_flight' %}" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type=submit></input>
+</form>
+{% endblock content %}

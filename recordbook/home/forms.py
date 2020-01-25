@@ -61,17 +61,16 @@ class JoinTeamForm(forms.Form):
 
 class DesignForm(forms.Form):
     name = forms.CharField(max_length=256)
-    motor_diameter = forms.IntegerField() # millimeters
+    motor_diameter = forms.IntegerField(label='Motor diameter (mm)') # millimeters
     fin_description = forms.CharField(max_length=500)
-    length = forms.DecimalField()  # millimeters
-    diameter = forms.DecimalField()  # millimeters
+    length = forms.DecimalField(label='Rocket length (mm)')  # millimeters
+    diameter = forms.DecimalField(label='Rocket diameter (mm)')  # millimeters
 
 
 class LaunchEntryForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        self.user = kwargs.pop('user', None)
         super(LaunchEntryForm, self).__init__(*args, **kwargs)
-        self.user = user
         members = self.user.account.team.accounts.all()
         for i in range(len(members)):
             field_name = 'member_%s' % (members[i].user.username,)
@@ -97,17 +96,17 @@ class LaunchEntryForm(forms.Form):
 
 
 # Helper function for FlightEntryForm
-def listLaunches(user):#TODO add launches attribute to team
-    launches = []
-    for launch_date in user.account.team.launches.all():
-        launches.append(launch_date)
-    return launches
+def get_team_launch_dates(user):
+    dates = []
+    for launch in user.account.team.launches:
+        dates.append((str(launch.launch_date), launch.launch_date.strftime("%B %d, %Y")))
+    return dates
 
 class FlightEntryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(FlightEntryForm, self).__init__(*args, **kwargs)
-        self.fields['launch'] = forms.ChoiceField(choices=listLaunches(self.user))
+        self.fields['launch'] = forms.ChoiceField(choices=get_team_launch_dates(self.user))
 
     goal = forms.CharField(max_length=500)
 
@@ -119,7 +118,7 @@ class FlightEntryForm(forms.Form):
     # descriptions
     payload_description = forms.CharField(max_length=20)
     booster_description = forms.CharField(max_length=20)
-    motor_description = forms.CharField(max_length=20)
+    motor_name = forms.CharField(max_length=20)
     motor_delay = forms.IntegerField()  # seconds
     parachute_size = forms.IntegerField()  # inches
     parachute_description = forms.CharField(max_length=20, required=False)
