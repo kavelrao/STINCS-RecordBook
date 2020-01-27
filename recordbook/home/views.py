@@ -124,8 +124,8 @@ def new_design(request):
             diameter = form.cleaned_data['diameter']
             # Create a new design and add attributes
             design = Design(name=name, motor_diameter=motor_diameter,
-                fin_description=fin_description, length=length, diameter=diameter)
-            design.owner = request.user.account
+                fin_description=fin_description, length=length, diameter=diameter,
+                owner=request.user.account, team=request.user.account.team)
             design.save()
 
             # Redirect to designs
@@ -162,7 +162,7 @@ def generate_non_member_fields(form):
     return list
 
 @login_required
-def new_launch(request): # TODO finish this
+def new_launch(request):
     if request.method == "POST":
         form = LaunchEntryForm(request.POST, user=request.user)
         if form.is_valid():
@@ -171,7 +171,7 @@ def new_launch(request): # TODO finish this
             notes = form.cleaned_data['notes']
 
             # Create a new launch and add attributes
-            launch = Launch(launch_date=launch_date, notes=notes)
+            launch = Launch(launch_date=launch_date, notes=notes, team=request.user.account.team)
             launch.save()
 
             # Add members to attendance
@@ -194,18 +194,17 @@ def new_launch(request): # TODO finish this
         return render(request, 'home/new_launch.html', context)
 
 @login_required
-def log_flight(request): # TODO finish
+def log_flight(request):
     if request.method == "POST":
         form = FlightEntryForm(request.POST, user=request.user)
         if form.is_valid():
             # Get attributes from the form
-            launch = Launch.objects.get(launch_date=form.cleaned_data['launch'])
+            launch = Launch.objects.get(launch_date=form.cleaned_data['launch'], team=request.user.account.team)
             goal = form.cleaned_data['goal']
             temperature = form.cleaned_data['temperature']
             wind_speed = form.cleaned_data['wind_speed']
             weather_notes = form.cleaned_data['weather_notes']
-            payload_description = form.cleaned_data['payload_description']
-            booster_description = form.cleaned_data['booster_description']
+            rocket_description = form.cleaned_data['rocket_description']
             motor_name = form.cleaned_data['motor_name']
             motor_delay = form.cleaned_data['motor_delay']
             parachute_size = form.cleaned_data['parachute_size']
@@ -222,13 +221,17 @@ def log_flight(request): # TODO finish
             damages = form.cleaned_data['damages']
             flight_characteristics = form.cleaned_data['flight_characteristics']
             considerations_for_next_flight = form.cleaned_data['considerations_for_next_flight']
+            # The Design field is only there if there are 2+ to choose from
+            if len(request.user.account.team.designs.all()) > 1:
+                design = Design.objects.get(name=form.cleaned_data['design'], team=request.user.account.team)
+            else:
+                design = Design.objects.get(team=request.user.account.team)
 
             # Create a new Flight and add attributes
             flight = Flight(
-                launch=launch, goal=goal, temperature=temperature, wind_speed=wind_speed,
-                weather_notes=weather_notes, payload_description=payload_description,
-                booster_description=booster_description, motor_name=motor_name,
-                motor_delay=motor_delay, parachute_size=parachute_size,
+                launch=launch, design=design, goal=goal, temperature=temperature, wind_speed=wind_speed,
+                weather_notes=weather_notes, rocket_description=rocket_description,
+                motor_name=motor_name, motor_delay=motor_delay, parachute_size=parachute_size,
                 parachute_description=parachute_description, cg_separation_from_cp=cg,
                 egg_mass=egg_mass, wadding_mass=wadding_mass, ballast_mass=ballast_mass,
                 motor_mass=motor_mass, total_mass=total_mass, altitude=altitude,
@@ -251,7 +254,11 @@ def log_flight(request): # TODO finish
 
     else:
         form = FlightEntryForm(user=request.user)
-        form.order_fields(['launch'])
+        order = ['launch']
+        # The Design field is only there if there are 2+ to choose from
+        if len(request.user.account.team.designs.all()) > 1:
+            order.append('designs')
+        form.order_fields(order)
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)
 

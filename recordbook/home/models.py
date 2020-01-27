@@ -18,6 +18,7 @@ class Account(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Team(models.Model):
     name = models.CharField(max_length=50)
     join_code = models.CharField(max_length=8)
@@ -25,14 +26,6 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
-    @property
-    def launches(self):
-        launches = []
-        for member in self.accounts.all():
-            for each_launch in member.launches_attended.all():
-                if each_launch not in launches:
-                    launches.append(each_launch)
-        return launches
 
 class Design(models.Model):
     name = models.CharField(max_length=50)
@@ -42,6 +35,11 @@ class Design(models.Model):
     diameter = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
     owner = models.ForeignKey(
         Account,
+        on_delete=models.CASCADE,
+        related_name='designs',
+    )
+    team = models.ForeignKey(
+        Team,
         on_delete=models.CASCADE,
         related_name='designs',
     )
@@ -61,6 +59,14 @@ class Launch(models.Model):
         Account,
         related_name='launches_attended',
     )
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.CASCADE,
+        related_name='launches',
+    )
+
+    def __str__(self):
+        return self.launch_date.strftime("%B %d, %Y")
 
 class Flight(models.Model):
     launch = models.ForeignKey(
@@ -68,28 +74,32 @@ class Flight(models.Model):
         on_delete=models.CASCADE,
         related_name='flights',
     )
+    design = models.ForeignKey(
+        Design,
+        on_delete=models.CASCADE,
+        related_name='flights',
+    )
     goal = models.CharField(max_length=500)
 
     # weather
-    temperature = models.IntegerField()  # Fahrenheit
-    wind_speed = models.IntegerField()  # mph
+    temperature = models.IntegerField(null=True)  # Fahrenheit
+    wind_speed = models.IntegerField(null=True)  # mph
     weather_notes = models.CharField(max_length=500)
 
     # descriptions
-    payload_description = models.CharField(max_length=20)
-    booster_description = models.CharField(max_length=20)
+    rocket_description = models.CharField(max_length=20)
     motor_name = models.CharField(max_length=20)
     motor_delay = models.IntegerField()  # seconds
     parachute_size = models.IntegerField()  # inches
     parachute_description = models.CharField(max_length=20)
 
-    cg_separation_from_cp = models.DecimalField(decimal_places=2, max_digits=6)  # mm
+    cg_separation_from_cp = models.DecimalField(decimal_places=2, max_digits=6, null=True)  # mm
 
     # masses in grams
     egg_mass = models.DecimalField(decimal_places=2, max_digits=6)
-    wadding_mass = models.DecimalField(decimal_places=2, max_digits=6)
+    wadding_mass = models.DecimalField(decimal_places=2, max_digits=6, null=True)
     ballast_mass = models.DecimalField(decimal_places=2, max_digits=6)
-    motor_mass = models.DecimalField(decimal_places=2, max_digits=6)
+    motor_mass = models.DecimalField(decimal_places=2, max_digits=6, null=True)
     total_mass = models.DecimalField(decimal_places=2, max_digits=6)
 
     # results
@@ -101,3 +111,6 @@ class Flight(models.Model):
     damages = models.CharField(max_length=256)
     flight_characteristics = models.CharField(max_length=500)
     considerations_for_next_flight = models.CharField(max_length=256)
+
+    def __str__(self):
+        return str(self.launch) + " launch #" + str(list(self.launch.flights.all()).index(self) + 1)

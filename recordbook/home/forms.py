@@ -95,53 +95,60 @@ class LaunchEntryForm(forms.Form):
     notes = forms.CharField(max_length=1000)
 
 
-# Helper function for FlightEntryForm
+# Helper functions for FlightEntryForm
 def get_team_launch_dates(user):
     dates = []
-    for launch in user.account.team.launches:
+    for launch in user.account.team.launches.all():
         dates.append((str(launch.launch_date), launch.launch_date.strftime("%B %d, %Y")))
     return dates
+
+def get_team_designs(user):
+    designs = []
+    for design in user.account.team.designs.all():
+        designs.append(design.name)
+    return designs
 
 class FlightEntryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(FlightEntryForm, self).__init__(*args, **kwargs)
         self.fields['launch'] = forms.ChoiceField(choices=get_team_launch_dates(self.user))
+        if len(get_team_designs(self.user)) > 1:
+            self.fields['design'] = forms.ChoiceField(choices=get_team_designs(self.user))
 
-    goal = forms.CharField(max_length=500)
+    goal = forms.CharField(max_length=500, required=False)
 
     # weather
-    temperature = forms.IntegerField()  # Fahrenheit
-    wind_speed = forms.IntegerField()  # mph
-    weather_notes = forms.CharField(max_length=500)
+    temperature = forms.IntegerField(label='Temperature (F)', required=False)  # Fahrenheit
+    wind_speed = forms.IntegerField(label='Wind speed (mph)', required=False)  # mph
+    weather_notes = forms.CharField(max_length=500, required=False)
 
     # descriptions
-    payload_description = forms.CharField(max_length=20)
-    booster_description = forms.CharField(max_length=20)
+    rocket_description = forms.CharField(max_length=100, required=False)
     motor_name = forms.CharField(max_length=20)
-    motor_delay = forms.IntegerField()  # seconds
-    parachute_size = forms.IntegerField()  # inches
+    motor_delay = forms.IntegerField(label='Motor delay (s)')  # seconds
+    parachute_size = forms.IntegerField(label='Parachute size (in)')  # inches
     parachute_description = forms.CharField(max_length=20, required=False)
 
-    cg_separation_from_cp = forms.DecimalField()  # inches
+    cg_separation_from_cp = forms.DecimalField(label='CG separation from CP (mm)', required=False)
 
     # masses in grams
-    egg_mass = forms.DecimalField()
-    wadding_mass = forms.DecimalField()
-    ballast_mass = forms.DecimalField()
-    motor_mass = forms.DecimalField()
-    total_mass = forms.DecimalField()
+    egg_mass = forms.DecimalField(label='Egg mass (g)')
+    wadding_mass = forms.DecimalField(label='Wadding mass (g)', required=False)
+    ballast_mass = forms.DecimalField(label='Ballast mass (g)')
+    motor_mass = forms.DecimalField(label='Motor mass (g)', required=False)
+    total_mass = forms.DecimalField(label='Total mass (g)')
 
     # results
-    altitude = forms.IntegerField()  # feet
+    altitude = forms.IntegerField(label='Altitude (ft)')  # feet
     time = forms.DecimalField()  # seconds
 
     # reflection
-    modifications_made = forms.CharField(max_length=256)
-    damages = forms.CharField(max_length=256)
-    flight_characteristics = forms.CharField(max_length=500)
-    considerations_for_next_flight = forms.CharField(max_length=256)
-    log_another_flight = forms.BooleanField(required=False, label='Would you like to log another flight?')
+    modifications_made = forms.CharField(max_length=256, required=False)
+    damages = forms.CharField(max_length=256, required=False)
+    flight_characteristics = forms.CharField(max_length=500, required=False)
+    considerations_for_next_flight = forms.CharField(max_length=256, required=False)
+    log_another_flight = forms.BooleanField(label='Would you like to log another flight?', required=False)
 
 
 
