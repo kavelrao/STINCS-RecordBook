@@ -100,6 +100,7 @@ class LaunchEntryForm(forms.Form):
                     'Your team already has a launch logged for that date.\
                     Add flights to that launch instead.'
                 )
+        return date
 
     def get_member_fields(self):
         fields = []
