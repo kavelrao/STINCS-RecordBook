@@ -91,6 +91,15 @@ Team
     font-size: 1.5em;
 }
 
+/*
+Launches
+*/
+
+.launches .add p {
+    margin-bottom: -2px;
+    font-size: 1.5em;
+}
+
 .log_in-form {
     margin-top: 25px;
     margin: auto;
