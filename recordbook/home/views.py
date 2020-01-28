@@ -7,6 +7,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 
+import datetime
 import random
 
 def index(request):
@@ -114,7 +115,7 @@ def designs(request):
 @login_required
 def new_design(request):
     if request.method == "POST":
-        form = DesignForm(request.POST)
+        form = DesignForm(request.POST, user=request.user)
         if form.is_valid():
             # Get attributes from the form
             name = form.cleaned_data['name']
@@ -135,7 +136,7 @@ def new_design(request):
         return render(request, 'home/new_design.html', context)
 
     else:
-        form = DesignForm()
+        form = DesignForm(user=request.user)
         context = {'form': form}
         return render(request, 'home/new_design.html', context)
 
@@ -227,6 +228,15 @@ def log_flight(request):
             else:
                 design = Design.objects.get(team=request.user.account.team)
 
+            # Calculating point value
+            if time < 41:
+                time_off = 41.0 - time
+            elif time > 43:
+                time_off = time - 43.0
+            else:
+                time_off = 0.0
+            points = abs(800.0 - altitude) + (4 * time_off)
+
             # Create a new Flight and add attributes
             flight = Flight(
                 launch=launch, design=design, goal=goal, temperature=temperature, wind_speed=wind_speed,
@@ -235,7 +245,7 @@ def log_flight(request):
                 parachute_description=parachute_description, cg_separation_from_cp=cg,
                 egg_mass=egg_mass, wadding_mass=wadding_mass, ballast_mass=ballast_mass,
                 motor_mass=motor_mass, total_mass=total_mass, altitude=altitude,
-                time=time, modifications_made=mods, damages=damages,
+                time=time, poitns=points, modifications_made=mods, damages=damages,
                 flight_characteristics=flight_characteristics,
                 considerations_for_next_flight=considerations_for_next_flight)
             flight.save()
@@ -262,10 +272,23 @@ def log_flight(request):
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)
 
+
 @login_required
-def launches(request, date):
-    context = {}
+def launches(request):
+    context = {'launches': request.user.account.team.launches.all()}
     return render(request, 'home/launches.html', context)
+
+
+@login_required
+def launch(request, date):
+    ymd = date.split('-')
+    date_obj = datetime.date(year=int(ymd[0]), month=int(ymd[1]), day=int(ymd[2]))
+    # Redirect user if the launch doesn't exist
+    if len(Launch.objects.filter(team=request.user.account.team, launch_date=date_obj)) == 0:
+        return redirect('launches')
+    launch = Launch.objects.get(team=request.user.account.team, launch_date=date_obj)
+    context = {'launch': launch}
+    return render(request, 'home/launch.html', context)
 
 def generate_join_code():
     join_code = ''

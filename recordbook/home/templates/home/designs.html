@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
 {% block content %}
 <h1>Designs</h1>
-<a href="/new_design/">Add a design</a>
+<a href="{% url 'new_design' %}">Add a design</a>
 {% if designs|length > 0 %}
   <ul>
   {% for design in designs %}

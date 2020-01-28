@@ -60,11 +60,23 @@ class JoinTeamForm(forms.Form):
         return username
 
 class DesignForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(DesignForm, self).__init__(*args, **kwargs)
+
     name = forms.CharField(max_length=256)
     motor_diameter = forms.IntegerField(label='Motor diameter (mm)') # millimeters
     fin_description = forms.CharField(max_length=500)
     length = forms.DecimalField(label='Rocket length (mm)')  # millimeters
     diameter = forms.DecimalField(label='Rocket diameter (mm)')  # millimeters
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        for design in self.user.account.team.designs:
+            if design.name == name:
+                raise forms.ValidationError('Your team already has a design with that name')
+                break
+        return name
 
 
 class LaunchEntryForm(forms.Form):
@@ -76,6 +88,18 @@ class LaunchEntryForm(forms.Form):
             field_name = 'member_%s' % (members[i].user.username,)
             field_label = "Did " + members[i].user.first_name + " attend?"
             self.fields[field_name] = forms.BooleanField(required=False, label=field_label)
+
+    launch_date = forms.DateField()
+    notes = forms.CharField(max_length=1000)
+
+    def clean_launch_date(self):
+        date = self.cleaned_data['launch_date']
+        for launch in self.user.account.team.launches:
+            if launch.launch_date == date:
+                raise forms.ValidationError(
+                    'Your team already has a launch logged for that date.\
+                    Add flights to that launch instead.'
+                )
 
     def get_member_fields(self):
         fields = []
@@ -90,9 +114,6 @@ class LaunchEntryForm(forms.Form):
             if not field.startswith('member_'):
                 fields.append(field)
         return fields
-
-    launch_date = forms.DateField()
-    notes = forms.CharField(max_length=1000)
 
 
 # Helper functions for FlightEntryForm
