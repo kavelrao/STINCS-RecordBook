@@ -28,7 +28,7 @@ urlpatterns = [
     path('home/', include('home.urls')),
     path('admin/', admin.site.urls),
     path('', home.views.index, name='index'),
-    path('dataEntry/', home.views.dataEntry, name='dataEntry'),
+    #path('dataEntry/', home.views.dataEntry, name='dataEntry'),
     path('dataEntry/new_launch', home.views.new_launch, name='new_launch'),
     path('dataEntry/log_flight', home.views.log_flight, name='log_flight'),
     path('designs/', home.views.designs, name='designs'),
