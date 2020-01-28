@@ -72,7 +72,7 @@ class DesignForm(forms.Form):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        for design in self.user.account.team.designs:
+        for design in self.user.account.team.designs.all():
             if design.name == name:
                 raise forms.ValidationError('Your team already has a design with that name')
                 break
@@ -94,7 +94,7 @@ class LaunchEntryForm(forms.Form):
 
     def clean_launch_date(self):
         date = self.cleaned_data['launch_date']
-        for launch in self.user.account.team.launches:
+        for launch in self.user.account.team.launches.all():
             if launch.launch_date == date:
                 raise forms.ValidationError(
                     'Your team already has a launch logged for that date.\
