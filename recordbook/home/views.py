@@ -185,7 +185,7 @@ def new_launch(request):
                     launch.members_attending.add(member_account)
 
             # Redirect to designs
-            return redirect('dataEntry')
+            return redirect('launches')
         # If form is invalid
         context = {'form': form, 'member_fields': generate_member_fields(form), 'non_member_fields': generate_non_member_fields(form)}
         return render(request, 'home/new_launch.html', context)
@@ -257,8 +257,8 @@ def log_flight(request):
                 return redirect('log_flight')
 
             # Redirect to launch page otherwise
-            date = form.cleaned_data['launch']
-            return redirect('/launches/' + date)  # TODO make this url a thing
+            date = form.cleaned_data['launch'].dashes()
+            return redirect('/launches/' + date)
 
         # If form is invalid
         context = {'form': form}

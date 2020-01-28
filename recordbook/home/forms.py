@@ -127,7 +127,7 @@ def get_team_launch_dates(user):
 def get_team_designs(user):
     designs = []
     for design in user.account.team.designs.all():
-        designs.append(design.name)
+        designs.append((design.name, design.name))
     return designs
 
 class FlightEntryForm(forms.Form):
