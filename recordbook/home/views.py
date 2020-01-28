@@ -145,10 +145,12 @@ def team(request):
     context = set_context(request)
     return render(request, 'home/team.html', context)
 
+"""
 @login_required
 def dataEntry(request):
     context = {}
     return render(request, 'home/dataEntry.html', context)
+"""
 
 # Helper functions for new_launch to convert field names into Field objects
 def generate_member_fields(form):
