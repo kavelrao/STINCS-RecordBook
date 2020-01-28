@@ -1,23 +1,27 @@
 {% extends "home/base.html" %}
 
 {% block content %}
-<h1>Launches</h1>
-<p><a href="{% url 'new_launch' %}">Add a launch</a></p>
-<p><a href="{% url 'log_flight' %}">Log a flight</a></p>
-{% if launches|length > 0 %}
-  {% for launch in launches %}
-    <h3><a href="{% url 'launch' launch.dashes %}">{{ launch.launch_date }}</a></h3>
-    {% if launch.flights.all|length > 0 %}
-        <ul>
-        {% for flight in launch.flights.all %}
-            <li>Flight {{ flight.flight_num }}: {{ flight.points }} points</li>
-        {% endfor %}
-        </ul>
+<div class="content">
+  <div class="launches">
+    <h1>Launches</h1>
+    <p><a href="{% url 'new_launch' %}">Add a launch</a></p>
+    <p><a href="{% url 'log_flight' %}">Log a flight</a></p>
+    {% if launches|length > 0 %}
+      {% for launch in launches %}
+        <h3><a href="{% url 'launch' launch.dashes %}">{{ launch.launch_date }}</a></h3>
+        {% if launch.flights.all|length > 0 %}
+            <ul>
+            {% for flight in launch.flights.all %}
+                <li>Flight {{ flight.flight_num }}: {{ flight.points }} points</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+        <p>No flights logged for this launch</p>
+        {% endif %}
+      {% endfor %}
     {% else %}
-    <p>No flights logged for this launch</p>
+      <p>No launches so far</p>
     {% endif %}
-  {% endfor %}
-{% else %}
-  <p>No launches so far</p>
-{% endif %}
+  </div>
+</div>
 {% endblock content %}
