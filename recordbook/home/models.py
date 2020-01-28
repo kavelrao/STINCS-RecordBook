@@ -68,6 +68,9 @@ class Launch(models.Model):
     def __str__(self):
         return self.launch_date.strftime("%B %d, %Y")
 
+    def dashes(self):
+        return self.launch_date.strftime("%Y-%m-%d")
+
 class Flight(models.Model):
     launch = models.ForeignKey(
         Launch,
@@ -105,6 +108,7 @@ class Flight(models.Model):
     # results
     altitude = models.IntegerField()  # feet
     time = models.DecimalField(decimal_places=2, max_digits=4)  # seconds
+    points = models.DecimalField(decimal_places=2, max_digits=5)
 
     # reflection
     modifications_made = models.CharField(max_length=256)
@@ -114,3 +118,6 @@ class Flight(models.Model):
 
     def __str__(self):
         return str(self.launch) + " launch #" + str(list(self.launch.flights.all()).index(self) + 1)
+
+    def flight_num(self):
+        return str(list(self.launch.flights.all()).index(self) + 1)
