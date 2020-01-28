@@ -1,17 +1,27 @@
 body {
     font-family: Arial;
-    margin-left: 5px;
-}
-.design-info {
-    margin-left: 20px;
 }
 
-.info {
-    margin-left: 20px;
+.content {
+    padding-top: 0.1vw;
+    padding-left: 8vw;
 }
+
+h1 {
+    font-size: 3.4em;
+    color: #23CF76;
+}
+
+table {
+    border-spacing: 5px;
+}
+/*
+Navbar
+*/
+
 .navbar {
     overflow: hidden;
-    background-color: #4CCE6D;
+    background-color: #23CF76;
     border: white;
 }
 
@@ -19,7 +29,7 @@ body {
     color: white;
     background-color: transparent;
     float: left;
-    padding: 20px 14px;
+    padding: 16px 14px;
     font-size: 1.3em;
     display: block;
     text-decoration: none;
@@ -30,7 +40,7 @@ body {
     /* animation-name: navbarAnim;
     animation-duration: 0.5s; */
     background-color: white;
-    color: #4CCE6D;
+    color: #23CF76;
 }
 /* 
 @keyframes navbarAnim {
@@ -40,11 +50,52 @@ body {
     to {color: #4CCE6D}
 } */
 
+/*
+Design 
+*/
 
+.design-box {
+    margin-left: 5vw;
+    margin-top: 25px;
+    width: 45%;
+    border: 5px solid #6CADDF;
+    padding: 20px;
+    padding-top: 15px;
+}
+
+.design-box li {
+    list-style: none;
+    color: #6CADDF;
+    font-size: 1.9em;
+}
+
+.design-info {
+    padding-top: 5px;
+    margin-left: 20px;
+    font-size: 1.2em;
+
+}
+
+.design h1{
+    color: #6CADDF;
+}
+
+.design a {
+    font-size: 1.5em;
+}
+
+/*
+Team
+*/
+
+.info {
+    font-size: 1.5em;
+}
 
 .log_in-form {
+    margin-top: 25px;
     margin: auto;
     width: 20%;
-    border: 3px solid #4CCE6D;
+    border: 5px solid #23CF76;
     padding: 20px;
 }
