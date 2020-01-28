@@ -72,7 +72,7 @@ class DesignForm(forms.Form):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        for design in self.user.account.team.designs:
+        for design in self.user.account.team.designs.all():
             if design.name == name:
                 raise forms.ValidationError('Your team already has a design with that name')
                 break
