@@ -94,7 +94,7 @@ class LaunchEntryForm(forms.Form):
 
     def clean_launch_date(self):
         date = self.cleaned_data['launch_date']
-        for launch in self.user.account.team.launches:
+        for launch in self.user.account.team.launches.all():
             if launch.launch_date == date:
                 raise forms.ValidationError(
                     'Your team already has a launch logged for that date.\
