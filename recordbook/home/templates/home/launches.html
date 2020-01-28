@@ -4,8 +4,10 @@
 <div class="content">
   <div class="launches">
     <h1>Launches</h1>
-    <p><a href="{% url 'new_launch' %}">Add a launch</a></p>
-    <p><a href="{% url 'log_flight' %}">Log a flight</a></p>
+    <div class="add">
+      <p><a href="{% url 'new_launch' %}">+Add a launch</a></p>
+      <p><a href="{% url 'log_flight' %}">+Log a flight</a></p>
+    </div>
     {% if launches|length > 0 %}
       {% for launch in launches %}
         <h3><a href="{% url 'launch' launch.dashes %}">{{ launch.launch_date }}</a></h3>
