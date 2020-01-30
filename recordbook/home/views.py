@@ -54,15 +54,15 @@ def create_team(request):
             captain.save()
             # Log in user and display the join code
             login(request, captain_user)
-            context = {'success': True, 'form': form, 'join_code': join_code}
+            context = {'form': form}
             return render(request, 'home/create_team.html', context)
         # If form is invalid
-        context = {'success': False, 'form': form}
+        context = {'form': form}
         return render(request, 'home/create_team.html', context)
 
     else:
         form = CreateTeamForm()
-        context = {'success': False, 'form': form}
+        context = {'form': form}
         return render(request, 'home/create_team.html', context)
 
 def join_team(request):
@@ -269,7 +269,7 @@ def log_flight(request):
         order = ['launch']
         # The Design field is only there if there are 2+ to choose from
         if len(request.user.account.team.designs.all()) > 1:
-            order.append('designs')
+            order.append('design')
         form.order_fields(order)
         context = {'form': form}
         return render(request, 'home/log_flight.html', context)
