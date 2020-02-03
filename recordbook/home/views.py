@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 
 import datetime
 import random
@@ -114,8 +115,9 @@ def designs(request):
 
 @login_required
 def new_design(request):
+    context = {}
     if request.method == "POST":
-        form = DesignForm(request.POST, user=request.user)
+        form = DesignForm(request.POST, request.FILES,user=request.user)
         if form.is_valid():
             # Get attributes from the form
             name = form.cleaned_data['name']
@@ -123,10 +125,14 @@ def new_design(request):
             fin_description = form.cleaned_data['fin_description']
             length = form.cleaned_data['length']
             diameter = form.cleaned_data['diameter']
+            uploaded_file = request.FILES['design']
+            fs = FileSystemStorage()
+            designFile = fs.save(uploaded_file.name, uploaded_file)
+
             # Create a new design and add attributes
             design = Design(name=name, motor_diameter=motor_diameter,
-                fin_description=fin_description, length=length, diameter=diameter,
-                owner=request.user.account, team=request.user.account.team)
+                fin_description=fin_description, length=length, diameter=diameter, designFile=designFile,
+                 owner=request.user.account, team=request.user.account.team)
             design.save()
 
             # Redirect to designs

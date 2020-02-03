@@ -2,6 +2,7 @@ from .models import User, Team
 
 from django import forms
 from django.contrib.auth.hashers import check_password
+from home.models import Design
 
 class CreateTeamForm(forms.Form):
     team_name = forms.CharField(max_length=50)
@@ -69,6 +70,7 @@ class DesignForm(forms.Form):
     fin_description = forms.CharField(max_length=500)
     length = forms.DecimalField(label='Rocket length (mm)')  # millimeters
     diameter = forms.DecimalField(label='Rocket diameter (mm)')  # millimeters
+    
 
     def clean_name(self):
         name = self.cleaned_data['name']

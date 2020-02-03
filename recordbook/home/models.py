@@ -33,6 +33,7 @@ class Design(models.Model):
     fin_description = models.CharField(max_length=500)
     length = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
     diameter = models.DecimalField(decimal_places=2, max_digits=6)  # millimeters
+    designFile = models.CharField(max_length =500, default="none")
     owner = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,

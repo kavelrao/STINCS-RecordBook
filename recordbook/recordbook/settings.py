@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #'uploader.apps.UploaderConfig',
 ]
 
 MIDDLEWARE = [
@@ -129,4 +130,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
 # Media files (user uploaded files)
-MEDIA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'

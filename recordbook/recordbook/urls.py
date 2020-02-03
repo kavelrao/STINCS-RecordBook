@@ -16,6 +16,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from home import views
+
 
 # Import sibling folder 'home'
 import sys
@@ -43,3 +47,5 @@ urlpatterns = [
     path('register/create_team/', home.views.create_team, name='create_team'),
     path('register/join_team/', home.views.join_team, name='join_team'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

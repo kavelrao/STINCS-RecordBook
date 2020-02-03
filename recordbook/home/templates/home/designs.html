@@ -10,12 +10,13 @@
       <ul>
       {% for design in designs %}
       <div class="design-box">
-        <li>{{ design.name }}</li>
+        <li>{{ design.name}}</li>
         <div class="design-info">
           <p>Owner: {{ design.owner }}</p>
           <p>Diameter: {{ design.diameter }}mm</p>
           <p>Motor diameter: {{ design.motor_diameter }}mm</p>
           <p>Length: {{ design.length }}mm</p>
+          <p>Uploaded file:  {{design.designFile}}</p>
         </div>
       </div>
       {% endfor %}
