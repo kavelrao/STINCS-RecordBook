@@ -60,6 +60,13 @@ class JoinTeamForm(forms.Form):
                 break
         return username
 
+    def clean_join_code(self):
+        join_code = self.cleaned_data['team_join_code']
+        for team in Team.objects.all():
+            if join_code == Team.join_code:
+                raise forms.ValidationError('Your join code is invalid')
+        return join_code
+
 class DesignForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
