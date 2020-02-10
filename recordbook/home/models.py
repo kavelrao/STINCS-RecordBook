@@ -50,7 +50,7 @@ class Design(models.Model):
 
     @property
     def folderpath(self):
-        path = str(Path().absolute().parent.absolute()) + "/media/" + self.owner.team.name + '/' + self.name
+        path = str(Path().absolute().absolute()) + "/media/" + self.owner.team.name + '/' + self.name
         return path
 
 class Launch(models.Model):

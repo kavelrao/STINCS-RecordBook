@@ -13,7 +13,13 @@ h1 {
 }
 
 table {
-    border-spacing: 5px;
+    border-spacing: 10px;
+    margin-top: 10px;
+}
+
+th {
+    padding-top: 10px;
+    height: 20px;
 }
 /*
 Navbar
@@ -42,7 +48,7 @@ Navbar
     background-color: white;
     color: #23CF76;
 }
-/* 
+/*
 @keyframes navbarAnim {
     from {background-color: #4CCE6D}
     to {background-color: white}
@@ -51,7 +57,7 @@ Navbar
 } */
 
 /*
-Design 
+Design
 */
 
 .design-box {
@@ -98,6 +104,14 @@ Launches
 .launches .add p {
     margin-bottom: -2px;
     font-size: 1.5em;
+}
+
+.launch-box {
+    margin-top: 25px;
+    width: 80%;
+    border: 5px solid #6CADDF;
+    padding: 20px;
+    padding-top: 15px;
 }
 
 .log_in-form {

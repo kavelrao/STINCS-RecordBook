@@ -7,7 +7,7 @@
         <p><a href="{% url 'log_flight' %}">Log a flight on this day</a></p>
         {% if launch.flights.all|length > 0 %}
         {% for flight in launch.flights.all %}
-
+        <div class="launch-box">
             <table>
                 <tr>
                     <td><b>Goal of the launch:</b> {{ flight.goal }}</td>
@@ -62,7 +62,7 @@
                     </td>
                 </tr>
             </table>
-
+        </div>
         {% endfor %}
         {% else %}
         <p>No flights logged for this launch</p>

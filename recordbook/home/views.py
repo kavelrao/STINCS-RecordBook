@@ -10,6 +10,8 @@ from django.core.files.storage import FileSystemStorage
 
 import datetime
 import random
+import os
+from pathlib import Path
 
 def index(request):
     context = {}
@@ -53,10 +55,13 @@ def create_team(request):
             # Create a new account associated with the user
             captain = Account(user=captain_user, team=team, is_captain=True)
             captain.save()
+
+            # Create a folder for the team's media
+            path = str(Path().absolute().absolute()) + "/media/" + team.name
+            os.mkdir(path)
             # Log in user and display the join code
             login(request, captain_user)
-            context = {'form': form}
-            return render(request, 'home/create_team.html', context)
+            return redirect('team')
         # If form is invalid
         context = {'form': form}
         return render(request, 'home/create_team.html', context)
@@ -127,7 +132,7 @@ def new_design(request):
             diameter = form.cleaned_data['diameter']
             uploaded_file = request.FILES['design']
             fs = FileSystemStorage()
-            designFile = fs.save(uploaded_file.name, uploaded_file)
+            designFile = fs.save(name, uploaded_file)
 
             # Create a new design and add attributes
             design = Design(name=name, motor_diameter=motor_diameter,
@@ -238,7 +243,7 @@ def log_flight(request):
 
             # Calculating point value
             if time < 41:
-                time_off = 41.0 - time
+                time_off = 41.0 - float(time)
             elif time > 43:
                 time_off = time - 43.0
             else:
@@ -253,7 +258,7 @@ def log_flight(request):
                 parachute_description=parachute_description, cg_separation_from_cp=cg,
                 egg_mass=egg_mass, wadding_mass=wadding_mass, ballast_mass=ballast_mass,
                 motor_mass=motor_mass, total_mass=total_mass, altitude=altitude,
-                time=time, poitns=points, modifications_made=mods, damages=damages,
+                time=time, points=points, modifications_made=mods, damages=damages,
                 flight_characteristics=flight_characteristics,
                 considerations_for_next_flight=considerations_for_next_flight)
             flight.save()
@@ -263,8 +268,9 @@ def log_flight(request):
                 return redirect('log_flight')
 
             # Redirect to launch page otherwise
-            date = form.cleaned_data['launch'].dashes()
-            return redirect('/launches/' + date)
+            date = form.cleaned_data['launch']
+            print(type(date))
+            return redirect('/launch/' + date)
 
         # If form is invalid
         context = {'form': form}
