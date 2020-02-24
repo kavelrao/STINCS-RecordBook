@@ -19,46 +19,56 @@
                     <td><b>Results:</b> {{ flight.points }} points</td>
                 </tr>
                 <tr>
-                    <td rowspan=4>
+                    <td rowspan=1>
                         <p><b>Temperature:</b> {{ flight.temperature }} degrees F</p>
+                    </td>
+                    <td rowspan=1>
+                        <p><b>Rocket:</b> {{ flight.rocket_description }}</p>
+                    </td>
+                    <td rowspan=1>
+                        <p><b>Eggs:</b> {{ flight.egg_mass }} g</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan=1>
                         <p><b>Wind speed:</b> {{ flight.wind_speed }} mph</p>
+                    </td>
+                    <td rowspan=1>
+                        <p><b>Motor:</b> {{ flight.motor_name }}</p>
+                    </td>
+                    <td rowspan=1>
+                        <p><b>Recovery protection:</b> {{ flight.wadding_mass }} g</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan=1>
                         <p><b>Notes:</b> {{ flight.weather_notes }}</p>
                     </td>
-                    <td rowspan=4>
-                        <p><b>Rocket:</b> {{ flight.rocket_description }}</p>
-                        <p><b>Motor:</b> {{ flight.motor_name }}</p>
+                    <td rowspan=1>
                         <p><b>Motor delay:</b> {{ flight.motor_delay }}</p>
+                    </td>
+                    <td rowspan=1>
+                        <p><b>Ballast:</b> {{ flight.ballast_mass }} g</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan=1>
+                    </td>
+                    <td rowspan=1>
                         <p><b>Parachute:</b> {{ flight.parachute_size }}" {{ flight.parachute_description }}</p>
+                    </td>
+                    <td rowspan=1>
+                        <p><b>Motor:</b> {{ flight.motor_mass }} g</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan=1>
+                    </td>
+                    <td rowspan=1>
                         <p><b>CG separation from CP:</b> {{ flight.cg_separation_from_cp }} mm</p>
                     </td>
-                    <td rowspan=4>
-                        <p><b>Eggs:</b> {{ flight.egg_mass }} g</p>
-                        <p><b>Recovery protection:</b> {{ flight.wadding_mass }} g</p>
-                        <p><b>Ballast:</b> {{ flight.ballast_mass }} g</p>
-                        <p><b>Motor:</b> {{ flight.motor_mass }} g</p>
+                    <td rowspan=1>
                         <p><b>Total: {{ flight.total_mass }} g</b></p>
-                    </td>
-                    <td>
-                        <p><b>Modifications made:</b></p>
-                        <p>{{ flight.modifications_made }}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><b>Damages:</b></p>
-                        <p>{{ flight.damages }}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><b>Flight characteristics:</b></p>
-                        <p>{{ flight.flight_characteristics }}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><b>Considerations for the next flight:</b></p>
-                        <p>{{ flight.considerations_for_next_flight }}</p>
                     </td>
                 </tr>
             </table>

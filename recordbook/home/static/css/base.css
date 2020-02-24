@@ -12,14 +12,26 @@ h1 {
     color: #23CF76;
 }
 
+h2{
+    color: #6CADDF
+}
+
 table {
-    border-spacing: 10px;
+    border-spacing: 30px;
     margin-top: 10px;
 }
 
 th {
+    font-size: 1.4em;
     padding-top: 10px;
-    height: 20px;
+    padding-bottom: 10px;
+    height: 40px;
+    color: #23CF76
+}
+
+td {
+    width: 30%;
+    height: 40px;
 }
 /*
 Navbar
