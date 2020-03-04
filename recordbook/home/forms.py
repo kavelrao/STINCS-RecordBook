@@ -77,7 +77,10 @@ class DesignForm(forms.Form):
     fin_description = forms.CharField(max_length=500)
     length = forms.DecimalField(label='Rocket length (mm)')  # millimeters
     diameter = forms.DecimalField(label='Rocket diameter (mm)')  # millimeters
-    
+    upload = forms.FileField(label='Upload a file')
+    class Meta:
+       model = Design
+       fields = ('name','motor_diameter','fin_description','length', 'diameter', 'upload')
 
     def clean_name(self):
         name = self.cleaned_data['name']

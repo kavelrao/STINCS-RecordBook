@@ -130,26 +130,25 @@ def new_design(request):
             fin_description = form.cleaned_data['fin_description']
             length = form.cleaned_data['length']
             diameter = form.cleaned_data['diameter']
-            uploaded_file = request.FILES['design']
-            fs = FileSystemStorage()
-            designFile = fs.save(name, uploaded_file)
+            upload = form.cleaned_data['upload']
 
             # Create a new design and add attributes
             design = Design(name=name, motor_diameter=motor_diameter,
-                fin_description=fin_description, length=length, diameter=diameter, designFile=designFile,
+                fin_description=fin_description, length=length, diameter=diameter, upload= upload, 
                  owner=request.user.account, team=request.user.account.team)
             design.save()
 
             # Redirect to designs
             return redirect('designs')
         # If form is invalid
-        context = {'form': form}
-        return render(request, 'home/new_design.html', context)
+#        context = {'form': form}
+#        return render(request, 'home/new_design.html', context)
 
     else:
         form = DesignForm(user=request.user)
         context = {'form': form}
-        return render(request, 'home/new_design.html', context)
+    return render(request, 'home/new_design.html', context)
+
 
 @login_required
 def team(request):

@@ -16,7 +16,8 @@
           <p>Diameter: {{ design.diameter }}mm</p>
           <p>Motor diameter: {{ design.motor_diameter }}mm</p>
           <p>Length: {{ design.length }}mm</p>
-          <p>Uploaded file:  {{design.designFile}}</p>
+          <p>Uploaded file: {{design.upload.filename}}</p>
+          <img src="{{ design.upload.url }}" alt="File">
           <img src={{ design.folderpath }}.jpg>
         </div>
       </div>
