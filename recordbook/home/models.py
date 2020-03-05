@@ -97,19 +97,19 @@ class Flight(models.Model):
     parachute_size = models.IntegerField()  # inches
     parachute_description = models.CharField(max_length=20)
 
-    cg_separation_from_cp = models.DecimalField(decimal_places=2, max_digits=6, null=True)  # mm
+    cg_separation_from_cp = models.DecimalField(decimal_places=2, max_digits=8, null=True)  # mm
 
     # masses in grams
-    egg_mass = models.DecimalField(decimal_places=2, max_digits=6)
-    wadding_mass = models.DecimalField(decimal_places=2, max_digits=6, null=True)
-    ballast_mass = models.DecimalField(decimal_places=2, max_digits=6)
-    motor_mass = models.DecimalField(decimal_places=2, max_digits=6, null=True)
-    total_mass = models.DecimalField(decimal_places=2, max_digits=6)
+    egg_mass = models.DecimalField(decimal_places=2, max_digits=8)
+    wadding_mass = models.DecimalField(decimal_places=2, max_digits=8, null=True)
+    ballast_mass = models.DecimalField(decimal_places=2, max_digits=8)
+    motor_mass = models.DecimalField(decimal_places=2, max_digits=8, null=True)
+    total_mass = models.DecimalField(decimal_places=2, max_digits=8)
 
     # results
     altitude = models.IntegerField()  # feet
-    time = models.DecimalField(decimal_places=2, max_digits=4)  # seconds
-    points = models.DecimalField(decimal_places=2, max_digits=5)
+    time = models.DecimalField(decimal_places=2, max_digits=8)  # seconds
+    points = models.DecimalField(decimal_places=2, max_digits=8)
 
     # reflection
     modifications_made = models.CharField(max_length=256)

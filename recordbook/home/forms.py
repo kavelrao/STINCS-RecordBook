@@ -2,7 +2,9 @@ from .models import User, Team
 
 from django import forms
 from django.contrib.auth.hashers import check_password
+from django.core.validators import MaxValueValidator, MinValueValidator
 from home.models import Design
+
 
 class CreateTeamForm(forms.Form):
     team_name = forms.CharField(max_length=50)
@@ -66,6 +68,7 @@ class JoinTeamForm(forms.Form):
             if join_code == Team.join_code:
                 raise forms.ValidationError('Your join code is invalid')
         return join_code
+
 
 class DesignForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -153,29 +156,40 @@ class FlightEntryForm(forms.Form):
     goal = forms.CharField(max_length=500, required=False)
 
     # weather
-    temperature = forms.IntegerField(label='Temperature (F)', required=False)  # Fahrenheit
-    wind_speed = forms.IntegerField(label='Wind speed (mph)', required=False)  # mph
+    temperature = forms.IntegerField(label='Temperature (F)', required=False,
+        validators=[MaxValueValidator(1000), MinValueValidator(-100)])  # Fahrenheit
+    wind_speed = forms.IntegerField(label='Wind speed (mph)', required=False,
+        validators=[MaxValueValidator(100), MinValueValidator(0)])  # mph
     weather_notes = forms.CharField(max_length=500, required=False)
 
     # descriptions
     rocket_description = forms.CharField(max_length=100, required=False)
     motor_name = forms.CharField(max_length=20)
-    motor_delay = forms.IntegerField(label='Motor delay (s)')  # seconds
-    parachute_size = forms.IntegerField(label='Parachute size (in)')  # inches
+    motor_delay = forms.IntegerField(label='Motor delay (s)',
+        validators=[MaxValueValidator(20), MinValueValidator(0)])  # seconds
+    parachute_size = forms.IntegerField(label='Parachute size (in)',
+        validators=[MaxValueValidator(40), MinValueValidator(0)])  # inches
     parachute_description = forms.CharField(max_length=20, required=False)
 
-    cg_separation_from_cp = forms.DecimalField(label='CG separation from CP (mm)', required=False)
+    cg_separation_from_cp = forms.DecimalField(label='CG separation from CP (mm)', required=False,
+        validators=[MaxValueValidator(1000000), MinValueValidator(0)])
 
     # masses in grams
-    egg_mass = forms.DecimalField(label='Egg mass (g)')
-    wadding_mass = forms.DecimalField(label='Wadding mass (g)', required=False)
-    ballast_mass = forms.DecimalField(label='Ballast mass (g)')
-    motor_mass = forms.DecimalField(label='Motor mass (g)', required=False)
-    total_mass = forms.DecimalField(label='Total mass (g)')
+    egg_mass = forms.DecimalField(label='Egg mass (g)',
+        validators=[MaxValueValidator(100), MinValueValidator(0)])
+    wadding_mass = forms.DecimalField(label='Wadding mass (g)', required=False,
+        validators=[MaxValueValidator(100), MinValueValidator(0)])
+    ballast_mass = forms.DecimalField(label='Ballast mass (g)',
+        validators=[MaxValueValidator(1000), MinValueValidator(0)])
+    motor_mass = forms.DecimalField(label='Motor mass (g)', required=False,
+        validators=[MaxValueValidator(1000), MinValueValidator(0)])
+    total_mass = forms.DecimalField(label='Total mass (g)',
+        validators=[MaxValueValidator(10000), MinValueValidator(0)])
 
     # results
-    altitude = forms.IntegerField(label='Altitude (ft)')  # feet
-    time = forms.DecimalField()  # seconds
+    altitude = forms.IntegerField(label='Altitude (ft)',
+        validators=[MaxValueValidator(10000), MinValueValidator(0)])  # feet
+    time = forms.DecimalField(validators=[MaxValueValidator(1000), MinValueValidator(0)])  # seconds
 
     # reflection
     modifications_made = forms.CharField(max_length=256, required=False)
@@ -184,6 +198,9 @@ class FlightEntryForm(forms.Form):
     considerations_for_next_flight = forms.CharField(max_length=256, required=False)
     log_another_flight = forms.BooleanField(label='Would you like to log another flight?', required=False)
 
+    def clean(self):
+        if len(self.user.account.team.designs.all()) < 1:
+            raise forms.ValidationError(('Please create a design before logging a flight'), code='no_design')
 
 
 # Not used
