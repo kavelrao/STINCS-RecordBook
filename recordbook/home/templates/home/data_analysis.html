@@ -1,0 +1,27 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+<div class="content">
+    <h1>Data Analysis</h1>
+    <div class="select-design">
+        <label for="designs">Choose a design</label>
+        <select id="designs">
+            {% for design in designs %}
+            <option value="{{ design }}">{{ design }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="design-analysis">
+    </div>
+
+    <div class="design-launches">
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    
+</script>
+{% endblock script %}

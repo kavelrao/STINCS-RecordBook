@@ -19,6 +19,7 @@
     <a href="/team/">Team</a>
     <a href="/designs/">Designs</a>
     <a href="/launches/">Launches</a>
+    <a href="/data_analysis/">Data Analysis</a>
     {% if user.is_authenticated %}
       <a href="/log_out/">Log out</a>
     {% else %}
@@ -29,5 +30,8 @@
   {% endblock navbar %}
   {% block content %}
   {% endblock content %}
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  {% block script %}
+  {% endblock script %}
 </body>
 </html>

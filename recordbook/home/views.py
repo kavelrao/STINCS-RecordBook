@@ -134,7 +134,7 @@ def new_design(request):
 
             # Create a new design and add attributes
             design = Design(name=name, motor_diameter=motor_diameter,
-                fin_description=fin_description, length=length, diameter=diameter, upload= upload, 
+                fin_description=fin_description, length=length, diameter=diameter, upload= upload,
                  owner=request.user.account, team=request.user.account.team)
             design.save()
 
@@ -302,6 +302,14 @@ def launch(request, date):
     launch = Launch.objects.get(team=request.user.account.team, launch_date=date_obj)
     context = {'launch': launch}
     return render(request, 'home/launch.html', context)
+
+
+@login_required
+def data_analysis(request):
+    context = {'designs': request.user.account.team.designs.all()}
+    return render(request, 'home/data_analysis.html', context)
+
+
 
 def generate_join_code():
     join_code = ''

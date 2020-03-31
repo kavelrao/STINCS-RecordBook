@@ -46,6 +46,7 @@ urlpatterns = [
     path('register/', home.views.register, name='register'),
     path('register/create_team/', home.views.create_team, name='create_team'),
     path('register/join_team/', home.views.join_team, name='join_team'),
+    path('data_analysis/', home.views.data_analysis, name='data_analysis'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
