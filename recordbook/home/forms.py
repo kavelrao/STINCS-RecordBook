@@ -75,7 +75,7 @@ class DesignForm(forms.Form):
         self.user = kwargs.pop('user', None)
         super(DesignForm, self).__init__(*args, **kwargs)
 
-    name = forms.CharField(max_length=256)
+    name = forms.CharField(max_length=30)
     motor_diameter = forms.IntegerField(label='Motor diameter (mm)') # millimeters
     fin_description = forms.CharField(max_length=500)
     length = forms.DecimalField(label='Rocket length (mm)')  # millimeters

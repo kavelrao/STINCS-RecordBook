@@ -3,25 +3,96 @@
 {% block content %}
 <div class="content">
     <h1>Data Analysis</h1>
-    <div class="select-design">
+    <div id="select-design">
         <label for="designs">Choose a design</label>
         <select id="designs">
-            {% for design in designs %}
-            <option value="{{ design }}">{{ design }}</option>
-            {% endfor %}
+            <option value="blank"> </option>
         </select>
     </div>
 
-    <div class="design-analysis">
+    <div class="chart-container" style="position: relative; width: 60vw; height: 80vh, padding-bottom: 10">
+        <canvas id="mass-altitude"></canvas>
     </div>
 
-    <div class="design-launches">
+    <div id="design-launches">
     </div>
 </div>
 {% endblock content %}
 
 {% block script %}
 <script>
-    
+$(function() {
+    var designs = {{ designs|safe }};
+    for (i = 0; i < designs.length; i++) {
+        var option = "<option value=" + i + ">" + designs[i]["fields"].name + "</option>";
+        $("#designs").append(option);
+    }
+});
+
+$("#designs").change(function() {
+    var designs = {{ designs|safe }};
+    var flights = {{ flights|safe }};
+    var designKey = $(this).val()
+    var design = designs[designKey];
+
+    if (designKey == "blank") {
+        $(".chart-container").empty();
+        $(".chart-container").append('<canvas id="mass-altitude"></canvas>');
+        return;
+    }
+
+    var designFlights = JSON.parse(flights[designKey]);
+    var flightPoints = [];
+
+    for (i = 0; i < designFlights.length; i++) {
+        let point = {};
+        point.x = designFlights[i]["fields"].total_mass;
+        point.y = designFlights[i]["fields"].altitude;
+        flightPoints.push(point);
+    }
+
+    var ctx = $("#mass-altitude");
+    var massAltitudeChart = new Chart(ctx, {
+        type: "scatter",
+        data: {
+            datasets: [{
+                label: design["fields"].name + ": mass to altitude",
+                data: flightPoints,
+                pointBackgroundColor: "#6CADDF",
+                pointRadius: 5,
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                fontSize: 18,
+                text: design["fields"].name + ": mass to altitude",
+            },
+            legend: {
+                display: false,
+            },
+            scales: {
+                xAxes: [{
+                    type: "linear",
+                    position: "bottom",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Mass (g)",
+                        fontSize: 16
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    position: "left",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Altitude (ft)",
+                        fontSize: 16
+                    }
+                }]
+            }
+        }
+    });
+});
 </script>
 {% endblock script %}

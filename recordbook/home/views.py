@@ -7,6 +7,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
+from django.core.serializers import serialize
+from django.http import JsonResponse
 
 import datetime
 import random
@@ -306,7 +308,11 @@ def launch(request, date):
 
 @login_required
 def data_analysis(request):
-    context = {'designs': request.user.account.team.designs.all()}
+    designs = serialize('json', request.user.account.team.designs.all())
+    flights = []
+    for design in request.user.account.team.designs.all():
+        flights.append(serialize('json', design.flights.all()))
+    context = {'designs': designs, 'flights': flights}
     return render(request, 'home/data_analysis.html', context)
 
 
