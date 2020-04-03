@@ -246,7 +246,7 @@ def log_flight(request):
             if time < 41:
                 time_off = 41.0 - float(time)
             elif time > 43:
-                time_off = time - 43.0
+                time_off = float(time) - 43.0
             else:
                 time_off = 0.0
             points = abs(800.0 - altitude) + (4 * time_off)
