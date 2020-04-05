@@ -11,28 +11,41 @@
   <script src="https://cdn.jsdelivr.net/npm/regression@2.0.1/dist/regression.min.js"></script>
 </head>
 <body>
+  <div class="navbar-wrap">
   {% block navbar %}
-  <div class="navbar">
-    {% if user.is_authenticated %}
-      <a href="/homepage/">RecordBook</a>
-    {% else %}
-      <a href="/">RecordBook</a>
-    {% endif %}
+  <div id="navbar" class="navbar">
+      {% if user.is_authenticated %}
+      <div class"cursed">
+        <a href="/homepage/">RecordBook</a>
+      </div>
+      {% else %}
+      <div class"cursed">
+        <a href="/">RecordBook</a>
+      </div>
+      {% endif %}
+    <!--<a href="/dataEntry/">Data Entry</a>-->
     <a href="/team/">Team</a>
     <a href="/designs/">Designs</a>
     <a href="/launches/">Launches</a>
-    <a href="/data_analysis/">Data Analysis</a>
-    {% if user.is_authenticated %}
-      <a href="/log_out/">Log out</a>
-    {% else %}
-      <a href="/log_in/">Log in</a>
-      <a href="/register/">Register</a>
-    {% endif %}
-  </div>
+    <a href="/data_analysis/">Data Analysias</a>
+    <div class = "logins">
+      {% if user.is_authenticated %}
+        <a href="/log_out/">Log out</a>
+      {% else %}
+        <a href="/log_in/">Log in</a>
+        <a href="/register/">Register</a>
+      {% endif %}
+    </div>
   {% endblock navbar %}
+  </div>
   {% block content %}
   {% endblock content %}
   {% block script %}
   {% endblock script %}
+  </div>
 </body>
+
+<script src="{% static 'js/test.js' %}"></script>
+
+
 </html>
