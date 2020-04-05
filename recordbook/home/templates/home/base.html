@@ -14,19 +14,19 @@
   {% block navbar %}
   <div class="navbar">
     {% if user.is_authenticated %}
-      <a href="/homepage/">RecordBook</a>
+      <a href="{% url 'homepage' %}">RecordBook</a>
     {% else %}
-      <a href="/">RecordBook</a>
+      <a href="{% url 'index' %}">RecordBook</a>
     {% endif %}
-    <a href="/team/">Team</a>
-    <a href="/designs/">Designs</a>
-    <a href="/launches/">Launches</a>
-    <a href="/data_analysis/">Data Analysis</a>
+    <a href="{% url 'team' %}">Team</a>
+    <a href="{% url 'designs' %}">Designs</a>
+    <a href="{% url 'launches' %}">Launches</a>
+    <a href="{% url 'data_analysis' %}">Data Analysis</a>
     {% if user.is_authenticated %}
-      <a href="/log_out/">Log out</a>
+      <a href="{% url 'log_out' %}">Log out</a>
     {% else %}
-      <a href="/log_in/">Log in</a>
-      <a href="/register/">Register</a>
+      <a href="{% url 'log_in' %}">Log in</a>
+      <a href="{% url 'register' %}">Register</a>
     {% endif %}
   </div>
   {% endblock navbar %}

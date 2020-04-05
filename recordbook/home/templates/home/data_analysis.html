@@ -1,25 +1,28 @@
 {% extends "home/base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="content">
-    <h1>Data Analysis</h1>
-    <div class="info">
-        <p>We have some tools to help you make sense of your data. <br>
-            This chart shows all the flights of a specific rocket design and constructs a trendline relating its altitude to mass.
-        </p>
-    </div>
-    <div id="select-design">
-        <label for="designs">Choose a design</label>
-        <select id="designs">
-            <option value="blank"> </option>
-        </select>
-    </div>
+    <div class="data-analysis">
+        <h1>Data Analysis</h1>
+        <div class="info">
+            <p>We have some tools to help you make sense of your data. <br>
+                This chart shows all the flights of a specific rocket design and constructs a trendline relating its altitude to mass.
+            </p>
+        </div>
+        <div id="select-design">
+            <label for="designs">Choose a design</label>
+            <select id="designs">
+                <option value="blank"> </option>
+            </select>
+        </div>
 
-    <div class="chart-container" style="position: relative; width: 60vw; height: 80vh, padding-bottom: 10">
-        <canvas id="mass-altitude"></canvas>
-    </div>
+        <div class="chart-container" style="position: relative; width: 60vw; height: 80vh, padding-bottom: 10">
+            <canvas id="mass-altitude"></canvas>
+        </div>
 
-    <div id="design-launches">
+        <div id="design-launches">
+        </div>
     </div>
 </div>
 {% endblock content %}
