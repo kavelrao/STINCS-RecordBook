@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 
 import datetime
 import random
@@ -124,7 +124,7 @@ def designs(request):
 def new_design(request):
     context = {}
     if request.method == "POST":
-        form = DesignForm(request.POST, request.FILES,user=request.user)
+        form = DesignForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             # Get attributes from the form
             name = form.cleaned_data['name']
@@ -156,6 +156,21 @@ def new_design(request):
 def team(request):
     context = set_context(request)
     return render(request, 'home/team.html', context)
+
+@login_required
+def remove_member(request):
+    print('method called')
+    if request.method == 'POST':
+        username = request.POST.__getitem__('username')
+        account = Account.objects.get(user__username=username)
+        user = account.user
+        deleted = user.delete()
+        print(deleted)
+        if deleted[0] == 2:
+            return JsonResponse(deleted[1])
+        else:
+            return HttpResponse(status_code=400)
+
 
 """
 @login_required
@@ -336,6 +351,10 @@ def set_context(request):
     account = user.account
     team = account.team
     captain = team.accounts.get(is_captain=True)
+    if account.is_captain:
+        is_captain = 1
+    else:
+        is_captain = 0
     designs = []
     for account in team.accounts.all():
         for design in account.designs.all():
@@ -346,6 +365,7 @@ def set_context(request):
     'team': team,
     'account': account,
     'captain': captain,
+    'is_captain': is_captain,
     'designs': designs
     }
     return context

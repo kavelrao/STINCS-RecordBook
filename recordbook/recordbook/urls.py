@@ -38,6 +38,7 @@ urlpatterns = [
     path('designs/', home.views.designs, name='designs'),
     path('new_design/', home.views.new_design, name='new_design'),
     path('team/', home.views.team, name='team'),
+    path('team/remove_member', home.views.remove_member, name='remove_member'),
     path('launches/', home.views.launches, name='launches'),
     path('launch/<str:date>/', home.views.launch, name='launch'),
     path('log_in/', home.views.Login.as_view(template_name='home/log_in.html'), name='log_in'),
