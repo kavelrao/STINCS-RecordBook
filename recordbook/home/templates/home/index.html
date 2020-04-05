@@ -1,4 +1,5 @@
 {% extends "home/base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="content">
@@ -6,7 +7,7 @@
     <h3>A tool to help your rocketry team with seamless organization, logging, and analysis</h3>
     <p><b>RecordBook allows you to organize your team members, keep track of launch attendance, log flights, and more!</b></p>
     <p>If you're the captain, register your team and send your members the join code to get started.</p>
-    <img src="http://thedukes.org/wp-content/uploads/2018/10/IMG_6169-fb-event-crop-1024x571.jpg">
+    <img src="{% static 'img/sparky_rocket_desert.jpg' %}">
     <br>
     <h2>Let us help you so you can worry less and fly more!</h2>
     <br>
