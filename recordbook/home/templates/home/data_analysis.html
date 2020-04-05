@@ -3,6 +3,11 @@
 {% block content %}
 <div class="content">
     <h1>Data Analysis</h1>
+    <div class="info">
+        <p>We have some tools to help you make sense of your data. <br>
+            This chart shows all the flights of a specific rocket design and constructs a trendline relating its altitude to mass.
+        </p>
+    </div>
     <div id="select-design">
         <label for="designs">Choose a design</label>
         <select id="designs">
@@ -46,8 +51,11 @@ $("#designs").change(function() {
     if (designFlights.length < 2) {
         $(".chart-container").empty();
         $(".chart-container").append('<canvas id="mass-altitude"></canvas>');
+        $("#select-design").append('<p id="not-enough-flights">Please log more flights for this design to analyze its data</p>')
         return;
     }
+    // make sure we don't display not enough flights if there are 2+
+    $("#not-enough-flights").remove();
 
     var flightPoints = [];  // chart uses [{x: x, y: y}]
     var trendlinePoints = [];  // trendline uses [[x, y]]
@@ -59,7 +67,7 @@ $("#designs").change(function() {
         point.y = parseFloat(y);
         flightPoints.push(point);
         trendlinePoints.push([parseFloat(point.x), point.y]);
-    }
+    };
 
     // sort trendlinePoints in order of increasing mass
     trendlinePoints.sort(function(p1, p2) {
@@ -68,7 +76,7 @@ $("#designs").change(function() {
         if (m1 > m2) return 1;
         if (m1 < m2) return -1;
         return 0;
-    })
+    });
 
     // now calculate trendline based on those points
     var trendline = regression.linear(trendlinePoints);
@@ -78,7 +86,6 @@ $("#designs").change(function() {
         {x: xmin, y: trendline.predict(xmin)[1]},
         {x: xmax - 1, y: trendline.predict(xmax - 1)[1]}
     ];
-    console.log(trendline);
 
     var ctx = $("#mass-altitude");
     massAltitudeChart = new Chart(ctx, {
