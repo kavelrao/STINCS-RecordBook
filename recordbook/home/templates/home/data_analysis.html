@@ -6,9 +6,7 @@
     <div class="data-analysis">
         <h1>Data Analysis</h1>
         <div class="info">
-            <p>We have some tools to help you make sense of your data. <br>
-                This chart shows all the flights of a specific rocket design and constructs a trendline relating its altitude to mass.
-            </p>
+            <p>Here are some tools to help you make sense of your data.</p>
         </div>
         <div id="select-design">
             <label for="designs">Choose a design</label>
@@ -16,11 +14,20 @@
                 <option value="blank"> </option>
             </select>
         </div>
-
-        <div class="chart-container" style="position: relative; width: 60vw; height: 80vh, padding-bottom: 10">
-            <canvas id="mass-altitude"></canvas>
+        <div class="analysis">
+            <h4>This chart shows all the flights of a specific rocket design and constructs a trendline relating its altitude to mass.</h4>
+            <div class="chart-container" style="position: relative; width: 60vw; height: 70vh">
+                <canvas id="mass-altitude"></canvas>
+            </div>
+            <div id="predictor">
+                <h4 id="predictorTitle">This predictor uses the data you've logged
+                    to estimate a mass to reach your desired altitude.</h4>
+                <p id="predictorExplanation">Keep in mind there are a multitude
+                    of factors that may affect the flight, so treat it only as an estimate.</p>
+                <p>Desired altitude: <input id="predictorAltitude" type="number"></input> feet</p>
+                <p id="predictorMass">Estimated mass: [please enter an altitude]</p>
+            </div>
         </div>
-
         <div id="design-launches">
         </div>
     </div>
@@ -29,12 +36,14 @@
 
 {% block script %}
 <script>
+var trendlineEquation;
 $(function() {
     var designs = {{ designs|safe }};
     for (i = 0; i < designs.length; i++) {
         var option = "<option value=" + i + ">" + designs[i]["fields"].name + "</option>";
         $("#designs").append(option);
     };
+    $(".analysis").hide();
 });
 
 $("#designs").change(function() {
@@ -45,6 +54,7 @@ $("#designs").change(function() {
     if (designKey == "blank") {
         $(".chart-container").empty();
         $(".chart-container").append('<canvas id="mass-altitude"></canvas>');
+        $(".analysis").hide();
         return;
     };
 
@@ -55,10 +65,13 @@ $("#designs").change(function() {
         $(".chart-container").empty();
         $(".chart-container").append('<canvas id="mass-altitude"></canvas>');
         $("#select-design").append('<p id="not-enough-flights">Please log more flights for this design to analyze its data</p>')
+        $(".analysis").hide();
         return;
     };
     // make sure we don't display not enough flights if there are 2+
     $("#not-enough-flights").remove();
+    // display analysis section for design with enough data
+    $(".analysis").show()
 
     var flightPoints = [];  // chart uses [{x: x, y: y}]
     var trendlinePoints = [];  // trendline uses [[x, y]]
@@ -89,6 +102,8 @@ $("#designs").change(function() {
         {x: xmin, y: trendline.predict(xmin)[1]},
         {x: xmax - 1, y: trendline.predict(xmax - 1)[1]}
     ];
+    trendlineEquation = trendline.equation;
+    console.log(trendlineEquation);
 
     var ctx = $("#mass-altitude");
     massAltitudeChart = new Chart(ctx, {
@@ -142,7 +157,22 @@ $("#designs").change(function() {
                 }]
             }
         }
-    });
+    });  // end of mass-altitude chart
+});
+
+$("#predictorAltitude").change(function() {
+    var altitude = $(this).val();
+    if (altitude.length < 1) {
+        $("#predictorMass").text("Estimated mass: [please enter an altitude]");
+    }
+    else if (altitude <= 100) {
+        $("#predictorMass").text("Estimated mass: [please enter a valid altitude greater than 100 feet]");
+    }
+    else {
+        var mass = (altitude - trendlineEquation[1]) / trendlineEquation[0];
+        mass = mass.toFixed(2);
+        $("#predictorMass").text("Estimated mass: " + mass + " grams");
+    }
 });
 </script>
 {% endblock script %}

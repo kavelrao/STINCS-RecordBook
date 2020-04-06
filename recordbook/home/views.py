@@ -166,10 +166,7 @@ def remove_member(request):
         user = account.user
         deleted = user.delete()
         print(deleted)
-        if deleted[0] == 2:
-            return JsonResponse(deleted[1])
-        else:
-            return HttpResponse(status_code=400)
+        return JsonResponse(deleted[1])
 
 
 """
