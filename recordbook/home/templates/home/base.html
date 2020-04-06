@@ -16,7 +16,6 @@
   <div id="navbar" class="navbar">
       {% if user.is_authenticated %}
       <div class"cursed">
-<<<<<<< HEAD
         <a href="{% url 'homepage' %}">RecordBook</a>
       </div>
       {% else %}
@@ -34,26 +33,6 @@
       {% else %}
         <a href="{% url 'log_in' %}">Log in</a>
         <a href="{% url 'register' %}">Register</a>
-=======
-        <a href="/homepage/">RecordBook</a>
-      </div>
-      {% else %}
-      <div class"cursed">
-        <a href="/">RecordBook</a>
-      </div>
-      {% endif %}
-    <!--<a href="/dataEntry/">Data Entry</a>-->
-    <a href="/team/">Team</a>
-    <a href="/designs/">Designs</a>
-    <a href="/launches/">Launches</a>
-    <a href="/data_analysis/">Data Analysias</a>
-    <div class = "logins">
-      {% if user.is_authenticated %}
-        <a href="/log_out/">Log out</a>
-      {% else %}
-        <a href="/log_in/">Log in</a>
-        <a href="/register/">Register</a>
->>>>>>> a10be9106d03577382a0a14a84764e74ac3a1f9f
       {% endif %}
     </div>
   {% endblock navbar %}
