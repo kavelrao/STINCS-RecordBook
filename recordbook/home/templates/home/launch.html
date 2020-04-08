@@ -7,9 +7,7 @@
         <p><a href="{% url 'log_flight' %}">Log a flight on this day</a></p>
         {% if launch.flights.all|length > 0 %}
         {% for flight in launch.flights.all %}
-        <div class="launch-box">
             {% include "home/flight_table.html" with flight=flight %}
-        </div>
         {% endfor %}
         {% else %}
         <p>No flights logged for this launch</p>

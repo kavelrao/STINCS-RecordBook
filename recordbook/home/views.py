@@ -159,7 +159,6 @@ def team(request):
 
 @login_required
 def remove_member(request):
-    print('method called')
     if request.method == 'POST':
         username = request.POST.__getitem__('username')
         account = Account.objects.get(user__username=username)
@@ -327,6 +326,17 @@ def data_analysis(request):
     context = {'designs': designs, 'flights': flights}
     return render(request, 'home/data_analysis.html', context)
 
+
+@login_required
+def get_flight_table(request):
+    if request.method == 'GET':
+        user = request.user
+        design_name = request.GET.__getitem__('design_name')
+        flight_num = int(request.GET.__getitem__('flight_num'))
+        design = user.account.team.designs.get(name=design_name)
+        flight = design.flights.all()[flight_num]
+        context = {'flight': flight}
+        return render(request, 'home/flight_table.html', context)
 
 
 def generate_join_code():

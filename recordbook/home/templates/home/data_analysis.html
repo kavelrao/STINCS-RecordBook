@@ -27,8 +27,10 @@
                 <p>Desired altitude: <input id="predictorAltitude" type="number"></input> feet</p>
                 <p id="predictorMass">Estimated mass: [please enter an altitude]</p>
             </div>
-        </div>
-        <div id="design-launches">
+            <div id="design-launches">
+                <br>
+                <h4 id="launchesTitle">Below are all the flights of this design. Deselect those you don't want to use in the analysis.</h4>
+            </div>
         </div>
     </div>
 </div>
@@ -36,9 +38,10 @@
 
 {% block script %}
 <script>
+var designs = {{ designs|safe }};
+var flights = {{ flights|safe }};
 var trendlineEquation;
 $(function() {
-    var designs = {{ designs|safe }};
     for (i = 0; i < designs.length; i++) {
         var option = "<option value=" + i + ">" + designs[i]["fields"].name + "</option>";
         $("#designs").append(option);
@@ -46,9 +49,7 @@ $(function() {
     $(".analysis").hide();
 });
 
-$("#designs").change(function() {
-    var designs = {{ designs|safe }};
-    var flights = {{ flights|safe }};
+$("#designs").change(function refreshChart() {
     var designKey = $(this).val();
 
     if (designKey == "blank") {
@@ -158,6 +159,14 @@ $("#designs").change(function() {
             }
         }
     });  // end of mass-altitude chart
+
+    for (i = 0; i < designFlights.length; i++) {
+        let csrf_token = $('{% csrf_token %}')[0].value;
+        let tableResponse = $.get("{% url 'flight_table' %}", {'design_name': design["fields"].name,
+            'flight_num': i, 'csrfmiddlewaretoken': csrf_token}, function(text) {
+            $("#design-launches").append(text);
+        });
+    }
 });
 
 $("#predictorAltitude").change(function() {
