@@ -8,70 +8,7 @@
         {% if launch.flights.all|length > 0 %}
         {% for flight in launch.flights.all %}
         <div class="launch-box">
-            <table>
-                <tr>
-                    <td><b>Goal of the launch:</b> {{ flight.goal }}</td>
-                </tr>
-                <tr>
-                    <th>Weather</th>
-                    <th>Specifications</th>
-                    <th>Masses</th>
-                    <td><b>Results:</b> {{ flight.points }} points</td>
-                </tr>
-                <tr>
-                    <td rowspan=1>
-                        <p><b>Temperature:</b> {{ flight.temperature }} degrees F</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Rocket:</b> {{ flight.rocket_description }}</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Eggs:</b> {{ flight.egg_mass }} g</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td rowspan=1>
-                        <p><b>Wind speed:</b> {{ flight.wind_speed }} mph</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Motor:</b> {{ flight.motor_name }}</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Recovery protection:</b> {{ flight.wadding_mass }} g</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td rowspan=1>
-                        <p><b>Notes:</b> {{ flight.weather_notes }}</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Motor delay:</b> {{ flight.motor_delay }}</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Ballast:</b> {{ flight.ballast_mass }} g</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td rowspan=1>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Parachute:</b> {{ flight.parachute_size }}" {{ flight.parachute_description }}</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Motor:</b> {{ flight.motor_mass }} g</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td rowspan=1>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>CG separation from CP:</b> {{ flight.cg_separation_from_cp }} mm</p>
-                    </td>
-                    <td rowspan=1>
-                        <p><b>Total: {{ flight.total_mass }} g</b></p>
-                    </td>
-                </tr>
-            </table>
+            {% include "home/flight_table.html" with flight=flight %}
         </div>
         {% endfor %}
         {% else %}
