@@ -39,7 +39,12 @@
 {% block script %}
 <script>
 var designs = {{ designs|safe }};
-var flights = {{ flights|safe }};
+var xflights = {{ flights|safe }};
+var flights = [];
+for (i = 0; i < xflights.length; i++) {
+    flights.push(JSON.parse(xflights[i]));
+}
+var uncountedFlights = {};
 var trendlineEquation;
 $(function() {
     for (i = 0; i < designs.length; i++) {
@@ -49,7 +54,7 @@ $(function() {
     $(".analysis").hide();
 });
 
-$("#designs").change(function refreshChart() {
+$("#designs").change(function() {
     var designKey = $(this).val();
 
     if (designKey == "blank") {
@@ -60,7 +65,7 @@ $("#designs").change(function refreshChart() {
     };
 
     var design = designs[designKey];
-    var designFlights = JSON.parse(flights[designKey]);
+    var designFlights = flights[designKey];
 
     if (designFlights.length < 2) {
         $(".chart-container").empty();
@@ -74,6 +79,66 @@ $("#designs").change(function refreshChart() {
     // display analysis section for design with enough data
     $(".analysis").show()
 
+    refreshChart();
+
+    $("#design-launches").empty();
+    uncountedFlights = {};
+
+    // TODO flights draw in different order each time
+    for (i = 0; i < designFlights.length; i++) {
+        let csrf_token = $('{% csrf_token %}')[0].value;
+        let tableResponse = $.get("{% url 'flight_table' %}", {'design_name': design["fields"].name,
+                'flight_num': i, 'csrfmiddlewaretoken': csrf_token}, function(text) {
+            $("#design-launches").append(text);
+            let num = $(".launch-box").length
+            $(".launch-box").last().attr('id', 'flight_' + num);
+            let checkbox = '<input type="checkbox" class="check" name=check_' + num + ' value=check_' + num + ' id=check_' + num + ' checked></button>';
+            let label = '<label for=check_' + num + '>&nbsp;Use flight in analysis?</label>';
+            $(".launch-box").last().append(checkbox, label);
+        });
+    };
+    console.log(designFlights);
+});
+
+// handles selecting/deselecting of flights to be analyzed
+$(document).on("change", "input[class='check']", function() {
+    var id = $(this).prop('id').substring(6);
+    var designKey = $("#designs").val();
+    if (!this.checked) {
+        var removed = flights[designKey].splice(id, 1);
+        uncountedFlights[id] = removed[0];
+        refreshChart();
+    }
+    else {
+        var flight = uncountedFlights[id];
+        console.log(flight);
+        flights[designKey].splice(id, 0, flight);
+        refreshChart();
+    };
+});
+
+$("#predictorAltitude").change(function() {
+    var altitude = $(this).val();
+    if (altitude.length < 1) {
+        $("#predictorMass").text("Estimated mass: [please enter an altitude]");
+    }
+    else if (altitude <= 100) {
+        $("#predictorMass").text("Estimated mass: [please enter a valid altitude greater than 100 feet]");
+    }
+    else {
+        var mass = (altitude - trendlineEquation[1]) / trendlineEquation[0];
+        mass = mass.toFixed(2);
+        $("#predictorMass").text("Estimated mass: " + mass + " grams");
+    }
+});
+
+function refreshChart() {
+    $(".chart-container").empty();
+    $(".chart-container").append('<canvas id="mass-altitude"></canvas>');
+
+    var designKey = $("#designs").val();
+    var design = designs[designKey];
+    var designFlights = flights[designKey];
     var flightPoints = [];  // chart uses [{x: x, y: y}]
     var trendlinePoints = [];  // trendline uses [[x, y]]
     for (i = 0; i < designFlights.length; i++) {
@@ -104,7 +169,6 @@ $("#designs").change(function refreshChart() {
         {x: xmax - 1, y: trendline.predict(xmax - 1)[1]}
     ];
     trendlineEquation = trendline.equation;
-    console.log(trendlineEquation);
 
     var ctx = $("#mass-altitude");
     massAltitudeChart = new Chart(ctx, {
@@ -158,30 +222,7 @@ $("#designs").change(function refreshChart() {
                 }]
             }
         }
-    });  // end of mass-altitude chart
-
-    for (i = 0; i < designFlights.length; i++) {
-        let csrf_token = $('{% csrf_token %}')[0].value;
-        let tableResponse = $.get("{% url 'flight_table' %}", {'design_name': design["fields"].name,
-            'flight_num': i, 'csrfmiddlewaretoken': csrf_token}, function(text) {
-            $("#design-launches").append(text);
-        });
-    }
-});
-
-$("#predictorAltitude").change(function() {
-    var altitude = $(this).val();
-    if (altitude.length < 1) {
-        $("#predictorMass").text("Estimated mass: [please enter an altitude]");
-    }
-    else if (altitude <= 100) {
-        $("#predictorMass").text("Estimated mass: [please enter a valid altitude greater than 100 feet]");
-    }
-    else {
-        var mass = (altitude - trendlineEquation[1]) / trendlineEquation[0];
-        mass = mass.toFixed(2);
-        $("#predictorMass").text("Estimated mass: " + mass + " grams");
-    }
-});
+    });
+};
 </script>
 {% endblock script %}
